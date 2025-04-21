@@ -2,7 +2,7 @@ spring:
   application:
     name: my-local-diary
   config:
-    import: classpath:db.properties
+    import: classpath:secret.properties
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3306/my_local_diary
