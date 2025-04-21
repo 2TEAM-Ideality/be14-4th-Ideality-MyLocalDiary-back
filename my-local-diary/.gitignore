@@ -5,7 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-####################################
+#################################### custom start
 # 설정 파일
 *.properties
 
@@ -71,7 +71,7 @@ logs/
 node_modules/
 dist/
 
-####################################
+#################################### custom end
 
 ### STS ###
 .apt_generated
