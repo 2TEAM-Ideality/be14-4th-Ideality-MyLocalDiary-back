@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary;
+package com.leesang.mylocaldiary.test_mybatis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

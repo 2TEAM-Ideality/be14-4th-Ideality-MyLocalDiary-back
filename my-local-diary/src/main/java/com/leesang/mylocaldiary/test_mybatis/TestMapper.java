@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary;
+package com.leesang.mylocaldiary.test_mybatis;
 
 import org.apache.ibatis.annotations.Mapper;
 
