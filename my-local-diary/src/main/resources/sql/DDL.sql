@@ -7,20 +7,21 @@ DROP TABLE IF EXISTS member;
 
 CREATE TABLE member (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  login_id VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  birth VARCHAR(255) NOT NULL,
+  login_id VARCHAR(255),
+  password VARCHAR(255),
+  email VARCHAR(255),
+  birth VARCHAR(255),
   bio TEXT,
   created_at VARCHAR(255),
   deleted_at VARCHAR(255),
   profile_image TEXT,
-  status VARCHAR(255) NOT NULL,
-  suspension_count INT NOT NULL DEFAULT 0,
+  status VARCHAR(255),
+  suspension_count INT,
   profile_music VARCHAR(255),
   provider VARCHAR(255),
   provider_id VARCHAR(255),
-  is_public BOOLEAN NOT NULL DEFAULT TRUE,
+  is_public BOOLEAN,
+  is_deleted BOOLEAN,
   role VARCHAR(255)
 );
 
@@ -31,16 +32,17 @@ CREATE TABLE post (
   diary TEXT,
   created_at VARCHAR(255),
   updated_at VARCHAR(255),
-  likes_count INT NOT NULL DEFAULT 0,
-  member_id INT NOT NULL,
+  likes_count INT,
+  member_id INT,
+  is_deleted BOOLEAN,
   CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id)
 );
 
 CREATE TABLE likes (
-  id INT PRIMARY KEY PRIMARY KEY AUTO_INCREMENT,
+  id INT PRIMARY KEY AUTO_INCREMENT,
   created_at VARCHAR(255),
-  post_id INT NOT NULL,
-  member_id INT NOT NULL,
+  post_id INT,
+  member_id INT,
   CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id),
   CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id)
 );
@@ -51,27 +53,28 @@ CREATE TABLE comment(
   created_at VARCHAR(255),
   updated_at VARCHAR(255),
   post_id INT,
-  member_id INT NOT NULL,
+  member_id INT,
   parent_comment_id INT,
   CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id),
-  CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id)
+  CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id),
+  CONSTRaint FOREIGN KEY (parent_comment_id) REFERENCES comment(id)
 );
 
 CREATE TABLE place (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  latitude DECIMAL(10, 7) NOT NULL,
-  longitude DECIMAL(10, 7) NOT NULL,
+  name VARCHAR(255),
+  latitude DECIMAL(10, 7),
+  longitude DECIMAL(10, 7),
   orders INT,
-  thumbnail_image VARCHAR(255),
-  post_id INT NOT NULL,
+  thumbnail_image TEXT,
+  post_id INT,
   CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id)
 );
 
 CREATE TABLE photo (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  image_url VARCHAR(255) NOT NULL,
+  image_url VARCHAR(255),
   orders INT,
-  post_id INT NOT NULL,
+  post_id INT,
   FOREIGN KEY (post_id) REFERENCES post(id)
 );
