@@ -55,6 +55,7 @@ CREATE TABLE comment(
   post_id INT,
   member_id INT,
   parent_comment_id INT,
+  is_deleted BOOLEAN,
   CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id),
   CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id),
   CONSTRaint FOREIGN KEY (parent_comment_id) REFERENCES comment(id)
