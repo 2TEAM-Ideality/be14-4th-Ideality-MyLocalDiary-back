@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary;
+package com.leesang.mylocaldiary.member;
 
 import com.leesang.mylocaldiary.test_jpa.TestJpaService;
 import com.leesang.mylocaldiary.test_mybatis.TestService;
