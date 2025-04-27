@@ -13,3 +13,14 @@ mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+## S3
+cloud:
+  aws:
+    credentials:
+      access-key: your-access-key
+      secret-key: your-secret-key
+    region:
+      static: ap-northeast-2  # 서울 리전이면 이렇게
+    s3:
+      bucket: your-bucket-name
