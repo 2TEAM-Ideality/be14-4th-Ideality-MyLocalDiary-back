@@ -47,6 +47,7 @@ public class KakaoLoginController {
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .provider("kakao")
                     .providerId(userInfo.getId()+"")
+                    .role("ROLE_MEMBER")
                     .build();
             memberRepository.save(member);
             log.info("member save");
@@ -55,8 +56,7 @@ public class KakaoLoginController {
             log.info("member login");
         }
 
-        String jwtToken=jwtProvider.generateAccessToken(member.getId(),userEmail, "USER");
-//        return ResponseEntity.ok(userInfo);
+        String jwtToken=jwtProvider.generateAccessToken(member.getId(),userEmail, "ROLE_MEMBER");
         log.debug("callback end");
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + jwtToken)
