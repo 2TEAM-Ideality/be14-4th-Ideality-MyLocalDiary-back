@@ -13,6 +13,10 @@ spring:
     password: ${DB_PASSWORD}
   profiles:
     include: jwt, aws
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -34,3 +38,4 @@ cloud:
       static: ap-northeast-2  # 서울
     stack:
       auto: false
+
