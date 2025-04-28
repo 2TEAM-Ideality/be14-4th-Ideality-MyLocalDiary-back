@@ -41,18 +41,19 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
+//        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+//        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
 
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/follow")).permitAll() // /api/follow 단건 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/follow/stream")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilter(customAuthenticationFilter)
+//                .addFilter(customAuthenticationFilter)
                 .cors(cors -> cors // 🔥 cors 설정을 여기서 따로 처리
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
