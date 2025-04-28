@@ -5,6 +5,8 @@ import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.kakao.service.KakaoService;
 import com.leesang.mylocaldiary.security.kakao.dto.KakaoUserInfoResponseDto;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +42,11 @@ public class KakaoLoginController {
         if (optionalMember.isEmpty()) {
             member = MemberEntity.builder()
                     .email(userEmail)
+                    .birth("1900-01-01")   // 카카오에서 받아올 수 없어서 임의의 정보 입력
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
-                    .provider("kakao")  // 필요하면 추가
-                    .password("123456")
+                    .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .provider("kakao")
                     .providerId(userInfo.getId()+"")
-                    .birth(new Date().toString())   // null 로 바꾸면 제거해야 하는 부분
                     .build();
             memberRepository.save(member);
             log.info("member save");
