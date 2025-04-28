@@ -1,6 +1,6 @@
 package com.leesang.mylocaldiary.post.jpa.controller;
 
-import com.leesang.mylocaldiary.member.entity.Member;
+import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
 import com.leesang.mylocaldiary.post.jpa.service.PostService;
@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-// 시큐리티 적용할 때 필요
-// import org.springframework.security.core.annotation.AuthenticationPrincipal;
-// import com.leesang.mylocaldiary.security.UserDetailsImpl;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,10 +23,9 @@ public class PostController {
     public ResponseEntity<?> createPost(
             @RequestPart PostCreateRequest request,
             @RequestPart List<MultipartFile> images,
-            @RequestParam("memberId") Long memberId
+            @RequestParam("memberId") Integer memberId
     ) {
-        // memberId로 Member 엔티티 조회
-        Member member = memberRepository.findById(memberId)
+        MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         postService.createPost(request, images, member);

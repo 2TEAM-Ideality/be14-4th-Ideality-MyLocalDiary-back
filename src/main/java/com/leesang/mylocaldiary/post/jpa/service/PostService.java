@@ -1,6 +1,6 @@
 package com.leesang.mylocaldiary.post.jpa.service;
 
-import com.leesang.mylocaldiary.member.entity.Member;
+import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
 import com.leesang.mylocaldiary.post.jpa.entity.Photo;
 import com.leesang.mylocaldiary.post.jpa.entity.Place;
@@ -28,7 +28,7 @@ public class PostService {
     private final PlaceRepository placeRepository;
     private final S3Uploader s3Uploader;
 
-    public Long createPost(PostCreateRequest request, List<MultipartFile> images, Member member) {
+    public Long createPost(PostCreateRequest request, List<MultipartFile> images, MemberEntity member) {
         Post post = Post.builder()
                 .title(request.getTitle())
                 .post(request.getPost())
@@ -38,7 +38,6 @@ public class PostService {
                 .member(member)
                 .build();
 
-        // 1. 사진 업로드 및 저장
         int photoOrder = 0;
         for (MultipartFile image : images) {
             String imageUrl = s3Uploader.upload(image, "post-images");
@@ -50,7 +49,6 @@ public class PostService {
             post.addPhoto(photo);
         }
 
-        // 2. 장소 저장
         int placeOrder = 0;
         for (PostCreateRequest.PlaceDto placeDto : request.getPlaces()) {
             Place place = Place.builder()
@@ -64,7 +62,6 @@ public class PostService {
             post.addPlace(place);
         }
 
-        // 3. 저장
         postRepository.save(post);
         return post.getId();
     }

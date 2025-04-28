@@ -1,6 +1,6 @@
 package com.leesang.mylocaldiary.post.jpa.entity;
 
-import com.leesang.mylocaldiary.member.entity.Member;
+import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,7 +34,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private MemberEntity member; // 여기!
 
     private boolean isDeleted;
 
