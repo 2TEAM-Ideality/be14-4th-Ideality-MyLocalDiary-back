@@ -27,3 +27,7 @@ cloud:
       static: ap-northeast-2  # 서울
     stack:
       auto: false
+
+kakao:
+  client_id: ${REST_API_KEY}
+  redirect_uri: http://localhost:8080/callback
