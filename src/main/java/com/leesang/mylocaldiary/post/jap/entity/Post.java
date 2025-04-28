@@ -20,39 +20,31 @@ public class Post {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
     private String post;
 
-    @Column(columnDefinition = "TEXT")
     private String diary;
 
+    @Column(name = "created_at")
     private String createdAt;
+
+    @Column(name = "updated_at")
     private String updatedAt;
 
-    private Integer likesCount;
+    private int likesCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos = new ArrayList<>();
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Place> places = new ArrayList<>();
+    @Builder.Default
+    private List<Photo> photos = new ArrayList<>(); // ⭐ null 방지
 
-    @Builder
-    public Post(String title, String post, String diary, String createdAt, String updatedAt, Member member) {
-        this.title = title;
-        this.post = post;
-        this.diary = diary;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.likesCount = 0;
-        this.member = member;
-        this.photos = new ArrayList<>();
-        this.places = new ArrayList<>();
-    }
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Place> places = new ArrayList<>(); // ⭐ null 방지
 
     public void addPhoto(Photo photo) {
         photos.add(photo);
