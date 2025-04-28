@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: my-local-diary
@@ -15,6 +18,10 @@ mybatis:
   mapper-locations: classpath:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+token:
+  secret: ${secret_key}
+  expiration_time: 43200000
 
 cloud:
   aws:
