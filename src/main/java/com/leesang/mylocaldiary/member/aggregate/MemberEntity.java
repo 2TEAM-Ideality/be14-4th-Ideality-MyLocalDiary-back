@@ -13,7 +13,7 @@ public class MemberEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id;  
 
     @Column(name = "login_id")
     private String loginId;
