@@ -1,0 +1,105 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!src/main/**/build/
+!src/test/**/build/
+
+#################################### custom start
+# 설정 파일
+*.properties
+
+# === Java/Spring ===
+*.class
+*.jar
+*.war
+*.log
+
+# === Build system ===
+/build/
+/target/
+/out/
+
+# === IDEs ===
+*.sw?
+
+# === OS specific ===
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Environment ===
+.env
+*.local
+*.properties.local
+*.yml.local
+
+# === Gradle ===
+.gradle/
+!gradle-wrapper.jar
+gradle-app.setting
+
+# === Maven (사용 시) ===
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# === IntelliJ Rider/JetBrains Cache ===
+*.sublime-workspace
+*.sublime-project
+
+# === Test coverage ===
+/coverage/
+*.exec
+
+# === Logs ===
+logs/
+
+# === Temporary files ===
+*.tmp
+*.bak
+*.old
+
+# === Node (프론트 통합 시) ===
+node_modules/
+dist/
+
+#################################### custom end
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!src/main/**/bin/
+!src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!src/main/**/out/
+!src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
