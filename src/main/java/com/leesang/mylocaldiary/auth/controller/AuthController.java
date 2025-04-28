@@ -1,7 +1,10 @@
 package com.leesang.mylocaldiary.auth.controller;
 
+import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestLoginDTO;
+import com.leesang.mylocaldiary.auth.service.AuthService;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,7 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private CommonResponseVO commonResponseVO;
+    private final AuthService authService;
+
+    @Autowired
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     /* 설명. 포트 테스트용 */
     @GetMapping("/health")
@@ -17,4 +25,16 @@ public class AuthController {
         return "OK";
     }
 
+    /* 설명. 이메일 인증번호 발송 */
+    @PostMapping("/email-verification-code")
+    public ResponseEntity<CommonResponseVO<String>> emailVerificationCode(@RequestBody RequestEmailDTO requestEmailDTO) {
+        authService.sendVerificationCode(requestEmailDTO);
+        CommonResponseVO<String> res = CommonResponseVO.<String>builder()
+                .status(200)
+                .message("인증번호가 이메일로 전송되었습니다.")
+                .data(null)
+                .build();
+
+        return ResponseEntity.ok(res);
+    }
 }
