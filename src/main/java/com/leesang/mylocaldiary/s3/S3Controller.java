@@ -1,7 +1,6 @@
-package com.leesang.mylocaldiary.s3.config;
+package com.leesang.mylocaldiary.s3;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.s3.config;
+package com.leesang.mylocaldiary.s3;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

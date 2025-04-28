@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.s3.config;
+package com.leesang.mylocaldiary.s3;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
