@@ -1,5 +1,7 @@
-package com.leesang.mylocaldiary.security.kakao;
+package com.leesang.mylocaldiary.security.kakao.service;
 
+import com.leesang.mylocaldiary.security.kakao.dto.KakaoTokenResponseDto;
+import com.leesang.mylocaldiary.security.kakao.dto.KakaoUserInfoResponseDto;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
