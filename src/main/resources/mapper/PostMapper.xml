@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leesang.mylocaldiary.post.mybatis.mapper.PostMapper">
+
+    <resultMap id="PostResponseMap" type="com.leesang.mylocaldiary.post.mybatis.dto.PostResponse">
+        <id property="postId" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="diary" column="diary"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="nickname" column="nickname"/>
+        <collection property="photoUrls" ofType="string" column="photo_url"/>
+        <collection property="places" ofType="com.leesang.mylocaldiary.post.mybatis.dto.PostPlaceInfo">
+            <result property="name" column="place_name"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+        </collection>
+    </resultMap>
+
+    <!-- 1. 내가 쓴 게시글 전체 조회 -->
+    <select id="findMyPosts" resultMap="PostResponseMap">
+        SELECT
+            p.id AS post_id,
+            p.title,
+            p.diary,
+            p.created_at,
+            m.nickname,
+            ph.image_url AS photo_url,
+            pl.name AS place_name,
+            pl.latitude,
+            pl.longitude
+        FROM post p
+                 JOIN member m ON p.member_id = m.id
+                 LEFT JOIN photo ph ON ph.post_id = p.id
+                 LEFT JOIN place pl ON pl.post_id = p.id
+        WHERE p.member_id = #{memberId}
+          AND p.is_deleted = FALSE
+    </select>
+
+    <!-- 2. 내가 쓴 게시글 상세 조회 -->
+    <select id="findMyPostDetail" resultMap="PostResponseMap">
+        SELECT
+            p.id AS post_id,
+            p.title,
+            p.diary,
+            p.created_at,
+            m.nickname,
+            ph.image_url AS photo_url,
+            pl.name AS place_name,
+            pl.latitude,
+            pl.longitude
+        FROM post p
+                 JOIN member m ON p.member_id = m.id
+                 LEFT JOIN photo ph ON ph.post_id = p.id
+                 LEFT JOIN place pl ON pl.post_id = p.id
+        WHERE p.id = #{postId}
+          AND p.member_id = #{memberId}
+          AND p.is_deleted = FALSE
+    </select>
+
+    <!-- 3. 나와 팔로우관계 회원의 게시글 전체 조회 -->
+    <select id="findFollowedPosts" resultMap="PostResponseMap">
+        SELECT
+            p.id AS post_id,
+            p.title,
+            p.diary,
+            p.created_at,
+            m.nickname,
+            ph.image_url AS photo_url,
+            pl.name AS place_name,
+            pl.latitude,
+            pl.longitude
+        FROM post p
+                 JOIN member m ON p.member_id = m.id
+                 JOIN follow f ON f.follow_target_member_id = p.member_id
+                 LEFT JOIN photo ph ON ph.post_id = p.id
+                 LEFT JOIN place pl ON pl.post_id = p.id
+        WHERE f.following_member_id = #{memberId}
+          AND p.is_deleted = FALSE
+    </select>
+
+    <!-- 4. 나와 팔로우관계 회원의 게시글 상세 조회 -->
+    <select id="findFollowedPostDetail" resultMap="PostResponseMap">
+        SELECT
+            p.id AS post_id,
+            p.title,
+            p.diary,
+            p.created_at,
+            m.nickname,
+            ph.image_url AS photo_url,
+            pl.name AS place_name,
+            pl.latitude,
+            pl.longitude
+        FROM post p
+                 JOIN member m ON p.member_id = m.id
+                 JOIN follow f ON f.follow_target_member_id = p.member_id
+                 LEFT JOIN photo ph ON ph.post_id = p.id
+                 LEFT JOIN place pl ON pl.post_id = p.id
+        WHERE p.id = #{postId}
+          AND f.following_member_id = #{memberId}
+          AND p.is_deleted = FALSE
+    </select>
+
+</mapper>
