@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.post.jap.service;
+package com.leesang.mylocaldiary.post.jpa.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,6 @@ import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 @Component

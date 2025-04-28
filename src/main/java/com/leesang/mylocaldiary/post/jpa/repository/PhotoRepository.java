@@ -1,6 +1,6 @@
-package com.leesang.mylocaldiary.post.jap.repository;
+package com.leesang.mylocaldiary.post.jpa.repository;
 
-import com.leesang.mylocaldiary.post.jap.entity.Photo;
+import com.leesang.mylocaldiary.post.jpa.entity.Photo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PhotoRepository extends JpaRepository<Photo, Long> {

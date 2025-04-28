@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.post.jap.dto;
+package com.leesang.mylocaldiary.post.jpa.dto;
 
 import lombok.Getter;
 

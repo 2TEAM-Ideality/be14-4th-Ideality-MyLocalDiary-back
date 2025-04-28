@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.post.jap.entity;
+package com.leesang.mylocaldiary.post.jpa.entity;
 
 import com.leesang.mylocaldiary.member.entity.Member;
 import jakarta.persistence.*;

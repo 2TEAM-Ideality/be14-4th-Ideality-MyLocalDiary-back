@@ -1,9 +1,9 @@
-package com.leesang.mylocaldiary.post.jap.controller;
+package com.leesang.mylocaldiary.post.jpa.controller;
 
 import com.leesang.mylocaldiary.member.entity.Member;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
-import com.leesang.mylocaldiary.post.jap.dto.PostCreateRequest;
-import com.leesang.mylocaldiary.post.jap.service.PostService;
+import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
+import com.leesang.mylocaldiary.post.jpa.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

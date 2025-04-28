@@ -1,13 +1,13 @@
-package com.leesang.mylocaldiary.post.jap.service;
+package com.leesang.mylocaldiary.post.jpa.service;
 
 import com.leesang.mylocaldiary.member.entity.Member;
-import com.leesang.mylocaldiary.post.jap.dto.PostCreateRequest;
-import com.leesang.mylocaldiary.post.jap.entity.Photo;
-import com.leesang.mylocaldiary.post.jap.entity.Place;
-import com.leesang.mylocaldiary.post.jap.entity.Post;
-import com.leesang.mylocaldiary.post.jap.repository.PhotoRepository;
-import com.leesang.mylocaldiary.post.jap.repository.PlaceRepository;
-import com.leesang.mylocaldiary.post.jap.repository.PostRepository;
+import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
+import com.leesang.mylocaldiary.post.jpa.entity.Photo;
+import com.leesang.mylocaldiary.post.jpa.entity.Place;
+import com.leesang.mylocaldiary.post.jpa.entity.Post;
+import com.leesang.mylocaldiary.post.jpa.repository.PhotoRepository;
+import com.leesang.mylocaldiary.post.jpa.repository.PlaceRepository;
+import com.leesang.mylocaldiary.post.jpa.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
