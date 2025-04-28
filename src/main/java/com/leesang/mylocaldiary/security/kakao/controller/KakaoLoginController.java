@@ -27,6 +27,7 @@ public class KakaoLoginController {
 
     @GetMapping("/callback")
     public ResponseEntity<KakaoUserInfoResponseDto> callback(@RequestParam("code") String code) {
+        log.debug("callback start");
         String accessToken = kakaoService.getAccessTokenFromKakao(code);
 
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
@@ -38,19 +39,23 @@ public class KakaoLoginController {
         MemberEntity member;
         if (optionalMember.isEmpty()) {
             member = MemberEntity.builder()
-                    .loginId(userEmail)
+                    .email(userEmail)
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
                     .provider("kakao")  // 필요하면 추가
+                    .password("123456")
                     .providerId(userInfo.getId()+"")
                     .birth(new Date().toString())   // null 로 바꾸면 제거해야 하는 부분
                     .build();
             memberRepository.save(member);
+            log.info("member save");
         }else {
             member = optionalMember.get();
+            log.info("member login");
         }
 
         String jwtToken=jwtProvider.generateAccessToken(member.getId(),userEmail, "USER");
 //        return ResponseEntity.ok(userInfo);
+        log.debug("callback end");
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + jwtToken)
                 .body(userInfo);
