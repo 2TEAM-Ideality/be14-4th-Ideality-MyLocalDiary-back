@@ -53,7 +53,6 @@ CREATE TABLE post (
 CREATE TABLE likes (
   id INT PRIMARY KEY AUTO_INCREMENT,
   created_at VARCHAR(255),
-  post_id INT NOT NULL,
   member_id INT NOT NUll,
   type VARCHAR(255) NOT NULL,
   target_id INT NOT NULL,
@@ -75,7 +74,11 @@ CREATE TABLE comment(
   CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id),
   CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id),
   CONSTRAINT FOREIGN KEY (parent_comment_id) REFERENCES comment(id),
-  CONSTRAINT FOREIGN KEY (target_member_id) REFERENCES member(id)
+  CONSTRAINT FOREIGN KEY (target_member_id) REFERENCES member(id),
+-- 해당 포스트에 달린 댓글을 조회할 때 사용하기 위해
+  INDEX idx_comment_post_id (post_id),
+-- 해당 부모 댓글에 달린 댓글들을 조회할 때 사용하기 위해
+  INDEX idx_comment_parent_comment_id (parent_comment_id)
 );
 
 CREATE TABLE place (
@@ -86,7 +89,9 @@ CREATE TABLE place (
   orders INT NOT NULL,
   thumbnail_image TEXT,
   post_id INT NOT NULL,
-  CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id)
+  CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id),
+#   place 테이블에도 index 추가 해당 포스트에 달린 장소를 조회할 때 사용
+  INDEX idx_place_post_id (post_id)
 );
 
 CREATE TABLE photo (
@@ -138,7 +143,8 @@ CREATE TABLE follow (
   FOREIGN KEY (follow_target_member_id) REFERENCES member(id),
   UNIQUE (following_member_id, follow_target_member_id),
   INDEX idx_follow_from (following_member_id),                    -- 내가 팔로우한 사람 조회용
-  INDEX idx_follow_to (follow_target_member_id)
+  INDEX idx_follow_to (follow_target_member_id),
+  INDEX idx_follow (following_member_id, follow_target_member_id)
 );
 
 CREATE TABLE notification (
