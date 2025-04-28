@@ -40,11 +40,11 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Photo> photos = new ArrayList<>(); // ⭐ null 방지
+    private List<Photo> photos = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Place> places = new ArrayList<>(); // ⭐ null 방지
+    private List<Place> places = new ArrayList<>();
 
     public void addPhoto(Photo photo) {
         photos.add(photo);

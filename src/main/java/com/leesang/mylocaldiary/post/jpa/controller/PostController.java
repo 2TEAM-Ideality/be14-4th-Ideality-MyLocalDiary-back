@@ -20,7 +20,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final MemberRepository memberRepository; // ✅ 추가
+    private final MemberRepository memberRepository;
 
     @PostMapping
     public ResponseEntity<?> createPost(
@@ -35,7 +35,7 @@ public class PostController {
         postService.createPost(request, images, member);
         return ResponseEntity.ok().build();
     }
-    
+
     /*
     // Security
     @PostMapping
