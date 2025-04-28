@@ -1,30 +1,26 @@
 package com.leesang.mylocaldiary.post.jap.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
-@Service
-@RequiredArgsConstructor
+@Component
 public class S3Uploader {
 
     @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    private String bucketName;
 
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
@@ -39,38 +35,32 @@ public class S3Uploader {
 
     @PostConstruct
     public void initializeS3Client() {
-        s3Client = S3Client.builder()
+        this.s3Client = S3Client.builder()
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey))
+                )
                 .region(Region.of(region))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKey, secretKey)
-                ))
                 .build();
     }
 
-    public String upload(MultipartFile file, String dirName) throws IOException {
-        String originalName = file.getOriginalFilename();
-        String filename = createFileName(originalName);
+    public String upload(MultipartFile multipartFile, String folderName) {
+        String originalFilename = multipartFile.getOriginalFilename();
+        String ext = originalFilename.substring(originalFilename.lastIndexOf('.'));
+        String fileName = folderName + "/" + UUID.randomUUID() + ext;
 
-        String key = dirName + "/" + filename;
+        try {
+            s3Client.putObject(
+                    PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(fileName)
+                            .contentType(multipartFile.getContentType())
+                            .build(),
+                    software.amazon.awssdk.core.sync.RequestBody.fromBytes(multipartFile.getBytes())
+            );
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(key)
-                .contentType(file.getContentType())
-                .build();
-
-        s3Client.putObject(putObjectRequest, software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
-
-        return getFileUrl(key);
-    }
-
-    private String createFileName(String originalName) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String encodedName = URLEncoder.encode(originalName, StandardCharsets.UTF_8);
-        return timestamp + "_" + encodedName;
-    }
-
-    private String getFileUrl(String key) {
-        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
+            return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString());
+        } catch (IOException e) {
+            throw new RuntimeException("S3 파일 업로드 실패", e);
+        }
     }
 }

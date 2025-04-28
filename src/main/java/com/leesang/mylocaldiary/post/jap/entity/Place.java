@@ -8,11 +8,13 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Place {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -22,22 +24,13 @@ public class Place {
     @Column(precision = 10, scale = 7)
     private BigDecimal longitude;
 
-    private Integer orders;
+    private int orders;
 
     private String thumbnailImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    @Builder
-    public Place(String name, BigDecimal latitude, BigDecimal longitude, Integer orders, String thumbnailImage) {
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.orders = orders;
-        this.thumbnailImage = thumbnailImage;
-    }
 
     public void setPost(Post post) {
         this.post = post;

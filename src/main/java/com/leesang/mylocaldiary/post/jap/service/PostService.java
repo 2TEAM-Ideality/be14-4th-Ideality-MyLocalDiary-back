@@ -1,19 +1,22 @@
 package com.leesang.mylocaldiary.post.jap.service;
 
+import com.leesang.mylocaldiary.member.entity.Member;
 import com.leesang.mylocaldiary.post.jap.dto.PostCreateRequest;
-import com.leesang.mylocaldiary.post.jap.dto.PostResponse;
 import com.leesang.mylocaldiary.post.jap.entity.Photo;
 import com.leesang.mylocaldiary.post.jap.entity.Place;
 import com.leesang.mylocaldiary.post.jap.entity.Post;
+import com.leesang.mylocaldiary.post.jap.repository.PhotoRepository;
+import com.leesang.mylocaldiary.post.jap.repository.PlaceRepository;
 import com.leesang.mylocaldiary.post.jap.repository.PostRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,79 +24,52 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PhotoRepository photoRepository;
+    private final PlaceRepository placeRepository;
+    private final S3Uploader s3Uploader;
 
-    public PostResponse savePost(PostCreateRequest request) {
-        // 1. Post Entity 생성
+    public Long createPost(PostCreateRequest request, List<MultipartFile> images, Member member) {
         Post post = Post.builder()
                 .title(request.getTitle())
-                .diary(request.getDiary())
                 .post(request.getPost())
-                .createdAt(nowString())
-                .memberId(request.getMemberId())
-                .isDeleted(false)
-                .likesCount(0)
+                .diary(request.getDiary())
+                .createdAt(now())
+                .updatedAt(now())
+                .member(member)
                 .build();
 
-        // 2. Photo Entity 리스트 생성
-        List<Photo> photos = request.getPhotos().stream()
-                .map(photoReq -> Photo.builder()
-                        .imageUrl(photoReq.getImageUrl())
-                        .orders(photoReq.getOrders())
-                        .post(post) // 양방향 매핑
-                        .build())
-                .collect(Collectors.toList());
+        // 1. 사진 업로드 및 저장
+        int photoOrder = 0;
+        for (MultipartFile image : images) {
+            String imageUrl = s3Uploader.upload(image, "post-images");
+            Photo photo = Photo.builder()
+                    .imageUrl(imageUrl)
+                    .orders(photoOrder++)
+                    .post(post)
+                    .build();
+            post.addPhoto(photo);
+        }
 
-        // 3. Place Entity 리스트 생성
-        List<Place> places = request.getPlaces().stream()
-                .map(placeReq -> Place.builder()
-                        .name(placeReq.getName())
-                        .latitude(placeReq.getLatitude())
-                        .longitude(placeReq.getLongitude())
-                        .orders(placeReq.getOrders())
-                        .thumbnailImage(placeReq.getThumbnailImage())
-                        .post(post) // 양방향 매핑
-                        .build())
-                .collect(Collectors.toList());
+        // 2. 장소 저장
+        int placeOrder = 0;
+        for (PostCreateRequest.PlaceDto placeDto : request.getPlaces()) {
+            Place place = Place.builder()
+                    .name(placeDto.getName())
+                    .latitude(BigDecimal.valueOf(placeDto.getLatitude()))
+                    .longitude(BigDecimal.valueOf(placeDto.getLongitude()))
+                    .orders(placeOrder++)
+                    .thumbnailImage(placeDto.getThumbnailImage())
+                    .post(post)
+                    .build();
+            post.addPlace(place);
+        }
 
-        // 4. Post에 사진/장소 세팅
-        post.setPhotos(photos);
-        post.setPlaces(places);
-
-        // 5. 저장
-        Post savedPost = postRepository.save(post);
-
-        // 6. 응답 변환
-        return toPostResponse(savedPost);
+        // 3. 저장
+        postRepository.save(post);
+        return post.getId();
     }
 
-    private PostResponse toPostResponse(Post post) {
-        return PostResponse.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .diary(post.getDiary())
-                .post(post.getPost())
-                .createdAt(post.getCreatedAt())
-                .photos(post.getPhotos().stream()
-                        .map(photo -> PostResponse.PhotoDto.builder()
-                                .id(photo.getId())
-                                .imageUrl(photo.getImageUrl())
-                                .orders(photo.getOrders())
-                                .build())
-                        .collect(Collectors.toList()))
-                .places(post.getPlaces().stream()
-                        .map(place -> PostResponse.PlaceDto.builder()
-                                .id(place.getId())
-                                .name(place.getName())
-                                .latitude(place.getLatitude())
-                                .longitude(place.getLongitude())
-                                .orders(place.getOrders())
-                                .thumbnailImage(place.getThumbnailImage())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    private String nowString() {
+    private String now() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

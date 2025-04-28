@@ -6,25 +6,21 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Photo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String imageUrl;
 
-    private Integer orders;
+    private int orders;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    @Builder
-    public Photo(String imageUrl, Integer orders) {
-        this.imageUrl = imageUrl;
-        this.orders = orders;
-    }
 
     public void setPost(Post post) {
         this.post = post;

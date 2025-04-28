@@ -10,30 +10,30 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String title;
 
-    @Lob
-    private String diary;
+    @Column(columnDefinition = "TEXT")
+    private String post;
 
-    @Lob
-    private String post; // (설명용, 썸네일? 요약글?)
+    @Column(columnDefinition = "TEXT")
+    private String diary;
 
     private String createdAt;
     private String updatedAt;
 
-    private Integer likesCount = 0;
-
-    private Boolean isDeleted = false;
+    private Integer likesCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member; // (추후 Member entity 연결 필요)
+    private Member member;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos = new ArrayList<>();
@@ -42,13 +42,16 @@ public class Post {
     private List<Place> places = new ArrayList<>();
 
     @Builder
-    public Post(String title, String diary, String post, String createdAt, String updatedAt, Member member) {
+    public Post(String title, String post, String diary, String createdAt, String updatedAt, Member member) {
         this.title = title;
-        this.diary = diary;
         this.post = post;
+        this.diary = diary;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.likesCount = 0;
         this.member = member;
+        this.photos = new ArrayList<>();
+        this.places = new ArrayList<>();
     }
 
     public void addPhoto(Photo photo) {
