@@ -8,6 +8,7 @@ build/
 #################################### custom start
 # 설정 파일
 *.properties
+!gradle/wrapper/gradle-wrapper.properties
 
 # === Java/Spring ===
 *.class
