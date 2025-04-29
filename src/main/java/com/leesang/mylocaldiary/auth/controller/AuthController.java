@@ -4,12 +4,14 @@ import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestLoginDTO;
 import com.leesang.mylocaldiary.auth.service.AuthService;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -27,9 +29,10 @@ public class AuthController {
 
     /* 설명. 이메일 인증번호 발송 */
     @PostMapping("/email-verification-code")
-    public ResponseEntity<CommonResponseVO<String>> emailVerificationCode(@RequestBody RequestEmailDTO requestEmailDTO) {
+    public ResponseEntity<CommonResponseVO<?>> emailVerificationCode(@RequestBody RequestEmailDTO requestEmailDTO) {
+        log.info("email verification code");
         authService.sendVerificationCode(requestEmailDTO);
-        CommonResponseVO<String> res = CommonResponseVO.<String>builder()
+        CommonResponseVO<Object> res = CommonResponseVO.builder()
                 .status(200)
                 .message("인증번호가 이메일로 전송되었습니다.")
                 .data(null)

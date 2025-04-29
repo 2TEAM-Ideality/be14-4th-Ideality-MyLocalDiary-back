@@ -11,8 +11,8 @@ import java.util.Random;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private EmailAuthService emailAuthService;
-    private EmailSendService emailSendService;
+    private final EmailAuthService emailAuthService;
+    private final EmailSendService emailSendService;
 
     @Autowired
     public AuthServiceImpl(EmailAuthService emailAuthService, EmailSendService emailSendService) {
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
 
     private static String genereateRandomCode() {
         Random r = new Random();
-        String ranndomNumber = String.valueOf(r.nextInt(900000) + 100000); // 100000 ~ 999999
-        return ranndomNumber;
+        // 100000 ~ 999999
+        return String.valueOf(r.nextInt(900000) + 100000);
     }
 }

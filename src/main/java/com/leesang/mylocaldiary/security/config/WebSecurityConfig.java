@@ -1,7 +1,6 @@
 package com.leesang.mylocaldiary.security.config;
 
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationFilter;
-import com.leesang.mylocaldiary.security.filter.CustomAuthenticationProvider;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -21,12 +18,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public WebSecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, JwtProvider jwtProvider) {
-        this.customAuthenticationProvider = customAuthenticationProvider;
+    public WebSecurityConfig(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
@@ -38,8 +33,11 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
+        CustomAuthenticationFilter customAuthenticationFilter =
+                new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+        customAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
+                new AntPathRequestMatcher("/api/auth/login", "POST")
+        );
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -48,7 +46,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilter(customAuthenticationFilter);
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

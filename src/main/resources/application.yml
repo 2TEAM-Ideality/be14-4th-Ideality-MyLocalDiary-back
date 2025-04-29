@@ -50,3 +50,6 @@ cloud:
     stack:
       auto: false
 
+logging:
+  level:
+    org.springframework.security: DEBUG

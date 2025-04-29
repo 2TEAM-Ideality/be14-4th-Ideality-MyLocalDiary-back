@@ -27,7 +27,7 @@ public class EmailSendServiceImpl implements EmailSendService {
             String htmlMsg = "<div style='font-family:Arial,sans-serif;'>"
                     + "<h2>My Local Diary 이메일 인증</h2>"
                     + "<p>아래 인증번호를 입력해주세요:</p>"
-                    + "<h1 style='color:blue;'>" + verificationCode + "</h1>"
+                    + "<p style='color:blue;'>" + verificationCode + "</p>"
                     + "<p>감사합니다!</p>"
                     + "</div>";
 
