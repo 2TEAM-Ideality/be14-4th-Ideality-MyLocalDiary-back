@@ -45,9 +45,11 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(new AntPathRequestMatcher("/api/auth/**"),
-                                         new AntPathRequestMatcher("/api/posts/**"),
-                                          new AntPathRequestMatcher("/api/mybatis/posts/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("api/mybatis/posts/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilter(customAuthenticationFilter);

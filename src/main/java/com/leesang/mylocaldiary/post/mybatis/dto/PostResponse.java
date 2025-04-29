@@ -45,4 +45,3 @@ public class PostResponse {
         private Boolean likedByCurrentUser;
     }
 }
-}
