@@ -49,9 +49,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/follow")).permitAll() // /api/follow 단건 허용
-                        .requestMatchers(new AntPathRequestMatcher("/api/follow/stream")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/notifications")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // /api/follow 단건 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/notifications/**")).permitAll()
                         .anyRequest().authenticated()
                 )
 //                .addFilter(customAuthenticationFilter)
@@ -59,7 +58,7 @@ public class WebSecurityConfig {
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
                             config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-                            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
                             config.setAllowedHeaders(Arrays.asList("*"));
                             config.setAllowCredentials(true);
                             return config;

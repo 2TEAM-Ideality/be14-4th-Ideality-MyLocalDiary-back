@@ -20,6 +20,13 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
         this.followSseController = followSseController;
     }
+    @Transactional
+    public void markAsRead(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("알림을 찾을 수 없습니다."));
+        notification.read(); // 상태 바꾸기
+    }
+
 
     @Transactional
     public void sendFollowNotification(Long receiverId, Long followerId, String followerName) {
