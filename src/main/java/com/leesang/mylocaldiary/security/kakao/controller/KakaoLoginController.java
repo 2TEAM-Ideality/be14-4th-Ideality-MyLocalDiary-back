@@ -3,6 +3,7 @@ package com.leesang.mylocaldiary.security.kakao.controller;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
+import com.leesang.mylocaldiary.security.kakao.dto.LoginResponseDto;
 import com.leesang.mylocaldiary.security.kakao.service.KakaoService;
 import com.leesang.mylocaldiary.security.kakao.dto.KakaoUserInfoResponseDto;
 import java.time.LocalDate;
@@ -28,8 +29,7 @@ public class KakaoLoginController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/callback")
-    public ResponseEntity<KakaoUserInfoResponseDto> callback(@RequestParam("code") String code) {
-        log.debug("callback start");
+    public ResponseEntity<LoginResponseDto> callback(@RequestParam("code") String code) {
         String accessToken = kakaoService.getAccessTokenFromKakao(code);
 
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
@@ -40,6 +40,8 @@ public class KakaoLoginController {
         Optional<MemberEntity> optionalMember = memberRepository.findByProviderAndProviderId("kakao", providerId);
 
         MemberEntity member;
+        String responseMessage="";
+
         if (optionalMember.isEmpty()) {
             member = MemberEntity.builder()
                     .email(userEmail)
@@ -51,16 +53,28 @@ public class KakaoLoginController {
                     .role("ROLE_MEMBER")
                     .build();
             memberRepository.save(member);
-            log.info("member save");
+            log.info("member registered");
+            responseMessage="카카오 계정으로 회원가입 성공";
         }else {
             member = optionalMember.get();
             log.info("member login");
         }
 
         String jwtToken=jwtProvider.generateAccessToken(member.getId(),userEmail, "ROLE_MEMBER");
+
+        if(responseMessage.length()==0){
+            responseMessage="카카오 계정으로 로그인 성공";
+        }else{
+            responseMessage+=", 카카오 계정으로 로그인 성공";
+        }
+
+        LoginResponseDto responseDto = new LoginResponseDto(
+            200,
+            responseMessage,
+            new LoginResponseDto.TokenData(jwtToken)
+        );
+
         log.debug("callback end");
-        return ResponseEntity.ok()
-                .header("Authorization", "Bearer " + jwtToken)
-                .body(userInfo);
+        return ResponseEntity.ok(responseDto);
     }
 }
