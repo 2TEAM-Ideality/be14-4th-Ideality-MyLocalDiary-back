@@ -18,13 +18,14 @@ public class MemberEntity {
     @Column(name = "login_id")
     private String loginId;
 
-    @Column(name = "password")
+
+    @Column(name = "password", nullable = true)
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "birth", nullable = false)
+    @Column(name = "birth")
     private String birth;
 
     @Column(name = "nickname", nullable = false, unique = true)
