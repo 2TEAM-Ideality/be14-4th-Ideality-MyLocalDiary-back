@@ -2,6 +2,7 @@ package com.leesang.mylocaldiary.auth.controller;
 
 import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestLoginDTO;
+import com.leesang.mylocaldiary.auth.dto.RequestVerifyEmailDTO;
 import com.leesang.mylocaldiary.auth.service.AuthService;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,6 @@ public class AuthController {
     /* 설명. 이메일 인증번호 발송 */
     @PostMapping("/email-verification-code")
     public ResponseEntity<CommonResponseVO<?>> emailVerificationCode(@RequestBody RequestEmailDTO requestEmailDTO) {
-        log.info("email verification code");
         authService.sendVerificationCode(requestEmailDTO);
         CommonResponseVO<Object> res = CommonResponseVO.builder()
                 .status(200)
@@ -38,6 +38,22 @@ public class AuthController {
                 .data(null)
                 .build();
 
+        return ResponseEntity.ok(res);
+    }
+
+    /* 설명. 이메일 인증 */
+    @PostMapping("/email-verification")
+    public ResponseEntity<CommonResponseVO<?>> verifyEmail(@RequestBody RequestVerifyEmailDTO verifyDTO) {
+        log.info(verifyDTO.getEmail());
+        log.info(verifyDTO.getVerificationCode());
+
+        authService.verificationCode(verifyDTO);
+
+        CommonResponseVO<Object> res = CommonResponseVO.builder()
+                .status(200)
+                .message("인증이 완료되었습니다.")
+                .data(null)
+                .build();
         return ResponseEntity.ok(res);
     }
 }

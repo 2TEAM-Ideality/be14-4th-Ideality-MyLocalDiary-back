@@ -1,6 +1,5 @@
 package com.leesang.mylocaldiary.email.service;
 
-import com.leesang.mylocaldiary.redis.util.RedisUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;

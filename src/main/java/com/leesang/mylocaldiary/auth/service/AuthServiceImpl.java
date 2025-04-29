@@ -1,6 +1,7 @@
 package com.leesang.mylocaldiary.auth.service;
 
 import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
+import com.leesang.mylocaldiary.auth.dto.RequestVerifyEmailDTO;
 import com.leesang.mylocaldiary.email.service.EmailAuthService;
 import com.leesang.mylocaldiary.email.service.EmailSendService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,17 @@ public class AuthServiceImpl implements AuthService {
         String verificationCode = genereateRandomCode();
         emailAuthService.saveAuthCode(requestEmailDTO.getEmail(), verificationCode);
         emailSendService.sendEmailByVerification(requestEmailDTO.getEmail(), verificationCode);
+    }
+
+    @Override
+    public void verificationCode(RequestVerifyEmailDTO verifyDTO) {
+        boolean isVerify = emailAuthService.verifyAuthCode(verifyDTO.getEmail(),
+                verifyDTO.getVerificationCode());
+
+        if (isVerify) {
+            emailAuthService.saveIsEmailVerfied(verifyDTO.getEmail(), true);
+            emailAuthService.deleteAuthCode(verifyDTO.getEmail());
+        }
     }
 
     private static String genereateRandomCode() {

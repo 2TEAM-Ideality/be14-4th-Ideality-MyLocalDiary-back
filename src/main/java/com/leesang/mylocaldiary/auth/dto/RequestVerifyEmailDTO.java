@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class RequestEmailDTO {
+public class RequestVerifyEmailDTO {
     private String email;
+    private String verificationCode;
 }
