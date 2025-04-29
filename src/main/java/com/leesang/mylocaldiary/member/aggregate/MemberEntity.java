@@ -24,7 +24,7 @@ public class MemberEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "birth", nullable = false)
+    @Column(name = "birth")
     private String birth;
 
     @Column(name = "nickname", nullable = false, unique = true)
