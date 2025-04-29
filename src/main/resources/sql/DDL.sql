@@ -67,6 +67,7 @@ CREATE TABLE comment(
   content TEXT NOT NULL,
   created_at VARCHAR(255),
   updated_at VARCHAR(255),
+  likes_count INT NOT NULL DEFAULT 0,
   post_id INT NOT NULL,
   member_id INT NOT NULL,
   parent_comment_id INT,

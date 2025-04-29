@@ -118,17 +118,15 @@
     </select>
 
     <select id="countPostLikes" resultType="int">
-        SELECT COUNT(*)
-        FROM likes
-        WHERE target_id = #{postId}
-          AND type = 'POST'
+        SELECT likes_count
+        FROM post
+        WHERE id = #{postId}
     </select>
 
     <select id="countCommentLikes" resultType="int">
-        SELECT COUNT(*)
-        FROM likes
-        WHERE target_id = #{commentId}
-          AND type = 'COMMENT'
+        SELECT likes_count
+        FROM post
+        WHERE id = #{commentId}
     </select>
 
     <select id="isPostLikedByCurrentUser" resultType="boolean">

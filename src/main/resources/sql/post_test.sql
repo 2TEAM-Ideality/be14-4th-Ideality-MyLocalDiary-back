@@ -36,10 +36,10 @@ VALUES
     (5, '2025-04-16', 2, 'COMMENT', 1);
 
 -- comment (댓글)
-INSERT INTO comment (id, content, created_at, post_id, member_id, parent_comment_id, is_deleted)
+INSERT INTO comment (id, content, created_at, likes_count,post_id, member_id, parent_comment_id, is_deleted)
 VALUES
-    (1, '정말 이뻤겠네요!', '2025-04-11', 1, 2, NULL, FALSE),
-    (2, '다음에 같이 가요', '2025-04-11', 1, 3, 1, FALSE);
+    (1, '정말 이뻤겠네요!', '2025-04-11', 2,1, 2, NULL, FALSE),
+    (2, '다음에 같이 가요', '2025-04-11', 0, 1, 3, 1, FALSE);
 
 -- follow (팔로우)
 INSERT INTO follow (id, following_member_id, follow_target_member_id, status)
