@@ -19,7 +19,7 @@ public class MemberEntity {
     private String loginId;
 
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = true)
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)

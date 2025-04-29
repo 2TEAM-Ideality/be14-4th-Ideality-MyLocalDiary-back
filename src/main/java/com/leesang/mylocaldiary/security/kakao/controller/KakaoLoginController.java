@@ -51,6 +51,7 @@ public class KakaoLoginController {
                     .provider("kakao")
                     .providerId(providerId)
                     .role("ROLE_MEMBER")
+                    .status("ACTIVE")
                     .build();
             memberRepository.save(member);
             log.info("member registered");
