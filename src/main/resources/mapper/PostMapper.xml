@@ -3,52 +3,34 @@
 
 <mapper namespace="com.leesang.mylocaldiary.post.mybatis.mapper.PostMapper">
 
-    <resultMap id="PostResponseMap" type="com.leesang.mylocaldiary.post.mybatis.dto.PostResponse">
-        <id property="postId" column="post_id"/>
-        <result property="title" column="title"/>
-        <result property="diary" column="diary"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="nickname" column="nickname"/>
-        <collection property="photoUrls" ofType="string" column="photo_url"/>
-        <collection property="places" ofType="com.leesang.mylocaldiary.post.mybatis.dto.PostPlaceInfo">
-            <result property="name" column="place_name"/>
-            <result property="latitude" column="latitude"/>
-            <result property="longitude" column="longitude"/>
-        </collection>
-    </resultMap>
-
-    <!-- 1. 내가 쓴 게시글 전체 조회 -->
-    <select id="findMyPosts" resultMap="PostResponseMap">
+    <!-- 1. 내가 쓴 게시글 전체 조회 (지도 + 마이페이지용) -->
+    <select id="findMyPostsForMap" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse">
         SELECT
-            p.id AS post_id,
-            p.title,
-            p.diary,
-            p.created_at,
-            m.nickname,
-            ph.image_url AS photo_url,
-            pl.name AS place_name,
+            p.id AS postId,
+            pl.name AS placeName,
             pl.latitude,
-            pl.longitude
+            pl.longitude,
+            pl.thumbnail_image AS thumbnailImage
         FROM post p
-                 JOIN member m ON p.member_id = m.id
-                 LEFT JOIN photo ph ON ph.post_id = p.id
-                 LEFT JOIN place pl ON pl.post_id = p.id
+                 JOIN place pl ON p.id = pl.post_id
         WHERE p.member_id = #{memberId}
           AND p.is_deleted = FALSE
     </select>
 
     <!-- 2. 내가 쓴 게시글 상세 조회 -->
-    <select id="findMyPostDetail" resultMap="PostResponseMap">
+    <select id="findMyPostDetail" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse">
         SELECT
-            p.id AS post_id,
+            p.id AS postId,
             p.title,
-            p.diary,
-            p.created_at,
+            p.post AS postContent,
+            p.created_at AS createdAt,
+            p.updated_at AS updatedAt,
             m.nickname,
-            ph.image_url AS photo_url,
-            pl.name AS place_name,
+            ph.image_url,
+            pl.name AS placeName,
             pl.latitude,
-            pl.longitude
+            pl.longitude,
+            pl.thumbnail_image
         FROM post p
                  JOIN member m ON p.member_id = m.id
                  LEFT JOIN photo ph ON ph.post_id = p.id
@@ -58,65 +40,107 @@
           AND p.is_deleted = FALSE
     </select>
 
-    <!-- 3. 나와 팔로우관계 회원의 게시글 전체 조회 -->
-    <select id="findFollowedPosts" resultMap="PostResponseMap">
+    <!-- 3. 팔로우한 유저 게시글 전체 조회 -->
+    <select id="findFollowedPostsForMap" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse">
         SELECT
-            p.id AS post_id,
-            p.title,
-            p.diary,
-            p.created_at,
-            m.nickname,
-            ph.image_url AS photo_url,
-            pl.name AS place_name,
+            p.id AS postId,
+            pl.name AS placeName,
             pl.latitude,
-            pl.longitude
-        FROM post p
-                 JOIN member m ON p.member_id = m.id
-                 JOIN follow f ON f.follow_target_member_id = p.member_id
-                 LEFT JOIN photo ph ON ph.post_id = p.id
-                 LEFT JOIN place pl ON pl.post_id = p.id
+            pl.longitude,
+            pl.thumbnail_image AS thumbnailImage
+        FROM follow f
+                 JOIN post p ON p.member_id = f.follow_target_member_id
+                 JOIN place pl ON p.id = pl.post_id
         WHERE f.following_member_id = #{memberId}
+          AND f.status = TRUE
           AND p.is_deleted = FALSE
     </select>
 
-    <!-- 4. 나와 팔로우관계 회원의 게시글 상세 조회 -->
-    <select id="findFollowedPostDetail" resultMap="PostResponseMap">
+    <!-- 4. 팔로우한 유저 게시글 상세 조회 -->
+    <select id="findFollowedPostDetail" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse">
         SELECT
-            p.id AS post_id,
+            p.id AS postId,
             p.title,
-            p.diary,
-            p.created_at,
+            p.post AS postContent,
+            p.created_at AS createdAt,
+            p.updated_at AS updatedAt,
             m.nickname,
-            ph.image_url AS photo_url,
-            pl.name AS place_name,
+            ph.image_url,
+            pl.name AS placeName,
             pl.latitude,
-            pl.longitude
-        FROM post p
+            pl.longitude,
+            pl.thumbnail_image
+        FROM follow f
+                 JOIN post p ON p.member_id = f.follow_target_member_id
                  JOIN member m ON p.member_id = m.id
-                 JOIN follow f ON f.follow_target_member_id = p.member_id
                  LEFT JOIN photo ph ON ph.post_id = p.id
                  LEFT JOIN place pl ON pl.post_id = p.id
         WHERE p.id = #{postId}
           AND f.following_member_id = #{memberId}
+          AND f.status = TRUE
           AND p.is_deleted = FALSE
     </select>
 
-    <!-- 게시글 좋아요 수 가져오기 -->
+    <!-- 5. 게시글 좋아요 수 조회 -->
     <select id="countPostLikes" resultType="int">
         SELECT COUNT(*)
         FROM likes
-        WHERE post_id = #{postId}
+        WHERE target_id = #{postId}
+          AND type = 'POST'
     </select>
 
-    <!-- 현재 로그인한 사용자가 이 게시글을 좋아요 눌렀는지 여부 -->
+    <!-- 6. 댓글 좋아요 수 조회 -->
+    <select id="countCommentLikes" resultType="int">
+        SELECT COUNT(*)
+        FROM likes
+        WHERE target_id = #{commentId}
+          AND type = 'COMMENT'
+    </select>
+
+    <!-- 7. 게시글 좋아요 여부 확인 -->
     <select id="isPostLikedByCurrentUser" resultType="boolean">
         SELECT EXISTS (
             SELECT 1
             FROM likes
-            WHERE post_id = #{postId}
+            WHERE target_id = #{postId}
               AND member_id = #{memberId}
+              AND type = 'POST'
         )
     </select>
 
+    <!-- 8. 댓글 조회 (최상위 부모 댓글만) -->
+    <select id="findCommentsByPostId" resultType="com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse">
+        SELECT
+            c.id,
+            c.content,
+            c.created_at,
+            c.member_id,
+            m.nickname,
+            m.profile_image,
+            (SELECT COUNT(*) FROM likes WHERE target_id = c.id AND type = 'COMMENT') AS likeCount
+        FROM comment c
+                 JOIN member m ON c.member_id = m.id
+        WHERE c.post_id = #{postId}
+          AND c.parent_comment_id IS NULL
+          AND c.is_deleted = FALSE
+        ORDER BY c.created_at ASC
+    </select>
+
+    <!-- 9. 대댓글 조회 (부모댓글에 연결된 댓글들) -->
+    <select id="findRepliesByParentCommentId" resultType="com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse">
+        SELECT
+            c.id,
+            c.content,
+            c.created_at,
+            c.member_id,
+            m.nickname,
+            m.profile_image,
+            (SELECT COUNT(*) FROM likes WHERE target_id = c.id AND type = 'COMMENT') AS likeCount
+        FROM comment c
+                 JOIN member m ON c.member_id = m.id
+        WHERE c.parent_comment_id = #{parentCommentId}
+          AND c.is_deleted = FALSE
+        ORDER BY c.created_at ASC
+    </select>
 
 </mapper>

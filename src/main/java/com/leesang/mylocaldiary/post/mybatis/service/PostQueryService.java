@@ -1,7 +1,8 @@
 package com.leesang.mylocaldiary.post.mybatis.service;
 
-import com.leesang.mylocaldiary.post.mybatis.dto.PostResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse;
 import com.leesang.mylocaldiary.post.mybatis.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,34 +15,48 @@ public class PostQueryService {
 
     private final PostMapper postMapper;
 
-    public List<PostResponse> getMyPosts(int memberId) {
-        return postMapper.findMyPosts(memberId);
+    // 1. 내가 쓴 게시글 전체 조회 (지도+마이페이지)
+    public List<PostSimpleResponse> findMyPostsForMap(Integer memberId) {
+        return postMapper.findMyPostsForMap(memberId);
     }
 
-    public PostResponse getMyPostDetail(int postId, int memberId) {
-        return postMapper.findMyPostDetail(postId, memberId);  // 캐스팅 제거
+    // 2. 내가 쓴 게시글 상세 조회
+    public PostDetailResponse findMyPostDetail(Integer postId, Integer memberId) {
+        return postMapper.findMyPostDetail(postId, memberId);
     }
 
-    public List<PostResponse> getFollowedPosts(int memberId) {
-        return postMapper.findFollowedPosts(memberId);
+    // 3. 팔로우한 유저 게시글 전체 조회
+    public List<PostSimpleResponse> findFollowedPostsForMap(Integer memberId) {
+        return postMapper.findFollowedPostsForMap(memberId);
     }
 
-    public PostDetailResponse getFollowedPostDetail(int postId, int memberId) {
-        PostDetailResponse detail = postMapper.findFollowedPostDetail(postId, memberId);
-        enrichDetail(detail, postId, memberId);
-        return detail;
+    // 4. 팔로우한 유저 게시글 상세 조회
+    public PostDetailResponse findFollowedPostDetail(Integer postId, Integer memberId) {
+        return postMapper.findFollowedPostDetail(postId, memberId);
     }
 
-    private void enrichDetail(PostDetailResponse detail, int postId, int memberId) {
-        detail.setPostLikeCount(postMapper.countPostLikes(postId));
-        detail.setPostLikedByCurrentUser(postMapper.isPostLikedByCurrentUser(postId, memberId));
-    }
-
-    public int getPostLikes(int postId) {
+    // 5. 게시글 좋아요 수 조회
+    public int countPostLikes(Integer postId) {
         return postMapper.countPostLikes(postId);
     }
 
-    public boolean isPostLikedByUser(int postId, int memberId) {
+    // 6. 댓글 좋아요 수 조회
+    public int countCommentLikes(Integer commentId) {
+        return postMapper.countCommentLikes(commentId);
+    }
+
+    // 7. 게시글 좋아요 여부 확인
+    public boolean isPostLikedByCurrentUser(Integer postId, Integer memberId) {
         return postMapper.isPostLikedByCurrentUser(postId, memberId);
+    }
+
+    // 8. 댓글 조회 (최상위 부모 댓글)
+    public List<CommentResponse> findCommentsByPostId(Integer postId) {
+        return postMapper.findCommentsByPostId(postId);
+    }
+
+    // 9. 대댓글 조회 (부모 댓글에 연결된)
+    public List<CommentResponse> findRepliesByParentCommentId(Integer parentCommentId) {
+        return postMapper.findRepliesByParentCommentId(parentCommentId);
     }
 }

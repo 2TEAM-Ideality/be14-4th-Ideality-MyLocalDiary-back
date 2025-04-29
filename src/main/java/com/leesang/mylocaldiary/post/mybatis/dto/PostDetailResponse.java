@@ -9,34 +9,27 @@ public class PostDetailResponse {
     private Long postId;
     private String title;
     private String post;
-    private String diary;
     private String createdAt;
-    private int postLikeCount;
-    private boolean postLikedByCurrentUser;
-    private AuthorInfo author;
-    private List<PhotoInfo> postList;
-    private List<CommentInfo> comments;
-
-    @Data
-    public static class AuthorInfo {
-        private String name;
-        private String avatar;
-    }
+    private Integer memberId;
+    private String nickname;
+    private String profileImage;
+    private List<PhotoInfo> photos;
+    private List<PlaceInfo> places;
 
     @Data
     public static class PhotoInfo {
         private Long id;
-        private String url;
+        private String imageUrl;
+        private Integer orders;
     }
 
     @Data
-    public static class CommentInfo {
+    public static class PlaceInfo {
         private Long id;
-        private String username;
-        private String avatar;
-        private String text;
-        private String createdAt;
-        private int likeCount;
-        private boolean likeByCurrentUser;
+        private String name;
+        private Double latitude;
+        private Double longitude;
+        private String thumbnailImage;
+        private Integer orders;
     }
 }
