@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
 
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -41,24 +42,26 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-//        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-//        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
 
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // /api/follow 단건 허용
-                        .requestMatchers(new AntPathRequestMatcher("/api/notifications/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // follow 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/notifications/**")).permitAll() // notifications 허용
+                        .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll() // kakao 로그인 허용
+                        .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll() // kakao callback 허용
                         .anyRequest().authenticated()
                 )
-//                .addFilter(customAuthenticationFilter)
-                .cors(cors -> cors // 🔥 cors 설정을 여기서 따로 처리
+                .addFilter(customAuthenticationFilter) // 🔥 customAuthenticationFilter 추가
+                .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
                             config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-                            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS"));
+                            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                             config.setAllowedHeaders(Arrays.asList("*"));
                             config.setAllowCredentials(true);
                             return config;

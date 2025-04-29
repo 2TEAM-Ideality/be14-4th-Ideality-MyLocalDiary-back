@@ -18,6 +18,7 @@ public class MemberEntity {
     @Column(name = "login_id")
     private String loginId;
 
+
     @Column(name = "password", nullable = false)
     private String password;
 
