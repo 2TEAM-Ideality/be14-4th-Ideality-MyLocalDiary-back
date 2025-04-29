@@ -41,9 +41,25 @@ public class EmailAuthService {
         return authCodeFromRedis.equals(authCode);
     }
 
+    /* 설명. 이메일 인증번호 검증 */
+    public boolean verifyEmail(String email) {
+        String key = generateVerifyKey(email);
+        Boolean verifyByKey = Boolean.valueOf(redisUtil.get(key));
+
+        if (!verifyByKey) {
+            return false;
+        }
+        return true;
+    }
+
     /* 설명. 이메일 인증번호 삭제 */
     public void deleteAuthCode(String email) {
         String key = generateAuthKey(email);
+        redisUtil.delete(key);
+    }
+
+    public void deleteVerified(String email) {
+        String key = generateVerifyKey(email);
         redisUtil.delete(key);
     }
 

@@ -1,7 +1,7 @@
 package com.leesang.mylocaldiary.auth.controller;
 
 import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
-import com.leesang.mylocaldiary.auth.dto.RequestLoginDTO;
+import com.leesang.mylocaldiary.auth.dto.RequestSignUpDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestVerifyEmailDTO;
 import com.leesang.mylocaldiary.auth.service.AuthService;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
@@ -52,6 +52,18 @@ public class AuthController {
         CommonResponseVO<Object> res = CommonResponseVO.builder()
                 .status(200)
                 .message("인증이 완료되었습니다.")
+                .data(null)
+                .build();
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<CommonResponseVO<?>> signUp(@RequestBody RequestSignUpDTO requestSignUpDTO) {
+        log.info(requestSignUpDTO.getBirth());
+        int result = authService.signUpMember(requestSignUpDTO);
+        CommonResponseVO<Object> res = CommonResponseVO.builder()
+                .status(201)
+                .message("회원가입이 완료되었습니다.")
                 .data(null)
                 .build();
         return ResponseEntity.ok(res);

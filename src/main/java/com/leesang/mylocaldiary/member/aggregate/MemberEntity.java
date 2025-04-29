@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class MemberEntity {
 
     @Id
@@ -23,6 +23,9 @@ public class MemberEntity {
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "birth", nullable = false)
     private String birth;
