@@ -69,4 +69,10 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public Long getUserIdFromToken(String token) {
+        Claims claims = getClaims(token);
+        return Long.valueOf(claims.getSubject()); // subject에 memberId가 들어있음
+    }
+
 }
