@@ -39,16 +39,16 @@ CREATE TABLE member (
 );
 
 CREATE TABLE post (
-                      id INT PRIMARY KEY AUTO_INCREMENT,
-                      title VARCHAR(255) NOT NULL,
-                      post TEXT,
-                      diary TEXT,
-                      created_at VARCHAR(255),
-                      updated_at VARCHAR(255),
-                      likes_count INT NOT NULL DEFAULT 0,
-                      member_id INT NOT NULL,
-                      is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
-                      FOREIGN KEY (member_id) REFERENCES member(id)
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  post TEXT,
+  diary TEXT,
+  created_at VARCHAR(255),
+  updated_at VARCHAR(255),
+  likes_count INT NOT NULL DEFAULT 0,
+  member_id INT NOT NULL,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id)
 );
 
 CREATE TABLE likes (
@@ -62,22 +62,25 @@ CREATE TABLE likes (
                        INDEX idx_user_target (member_id, type, target_id)
 );
 
-CREATE TABLE comment (
-                         id INT PRIMARY KEY AUTO_INCREMENT,
-                         content TEXT NOT NULL,
-                         created_at VARCHAR(255),
-                         updated_at VARCHAR(255),
-                         post_id INT NOT NULL,
-                         member_id INT NOT NULL,
-                         parent_comment_id INT,
-                         target_member_id INT,
-                         is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
-                         FOREIGN KEY (post_id) REFERENCES post(id),
-                         FOREIGN KEY (member_id) REFERENCES member(id),
-                         FOREIGN KEY (parent_comment_id) REFERENCES comment(id),
-                         FOREIGN KEY (target_member_id) REFERENCES member(id),
-                         INDEX idx_comment_post_id (post_id),
-                         INDEX idx_comment_parent_comment_id (parent_comment_id)
+CREATE TABLE comment(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  content TEXT NOT NULL,
+  created_at VARCHAR(255),
+  updated_at VARCHAR(255),
+  likes_count INT NOT NULL DEFAULT 0,
+  post_id INT NOT NULL,
+  member_id INT NOT NULL,
+  parent_comment_id INT,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  target_member_id INT,
+  CONSTRAINT FOREIGN KEY (post_id) REFERENCES post(id),
+  CONSTRAINT FOREIGN KEY (member_id) REFERENCES member(id),
+  CONSTRAINT FOREIGN KEY (parent_comment_id) REFERENCES comment(id),
+  CONSTRAINT FOREIGN KEY (target_member_id) REFERENCES member(id),
+-- 해당 포스트에 달린 댓글을 조회할 때 사용하기 위해
+  INDEX idx_comment_post_id (post_id),
+-- 해당 부모 댓글에 달린 댓글들을 조회할 때 사용하기 위해
+  INDEX idx_comment_parent_comment_id (parent_comment_id)
 );
 
 CREATE TABLE place (
@@ -180,3 +183,4 @@ CREATE TABLE report (
                         FOREIGN KEY (member_id) REFERENCES member(id),
                         FOREIGN KEY (report_reason_id) REFERENCES report_reason(id)
 );
+
