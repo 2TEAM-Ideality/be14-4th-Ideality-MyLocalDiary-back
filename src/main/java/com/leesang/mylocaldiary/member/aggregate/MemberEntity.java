@@ -73,4 +73,23 @@ public class MemberEntity {
     @Column(name = "role")
     private String role;
 
+    // 신고 횟수 증가
+    public void setReportCount(int newReportCount) {
+        this.reportCount = newReportCount;
+    }
+
+    // 회원 상태 변화
+    public void setStatus(String newStatus) {
+        this.status = newStatus; // 정지로 변경
+    }
+
+    // 회원 영구 탈퇴 처리
+    public void setIsDeleted(boolean suspendForever) {
+        this.isDeleted = suspendForever;
+    }
+
+    // 정지 횟수 증가
+    public void setSuspensionCount(int newSuspensionCount) {
+        this.suspensionCount = newSuspensionCount;
+    }
 }

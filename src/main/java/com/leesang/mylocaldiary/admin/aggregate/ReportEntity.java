@@ -55,5 +55,7 @@ public class ReportEntity {
 		this.createdAt = LocalDateTime.now();
 	}
 
-
+	public void setStatus(ReportStatus reportStatus) {
+		this.status = reportStatus;
+	}
 }

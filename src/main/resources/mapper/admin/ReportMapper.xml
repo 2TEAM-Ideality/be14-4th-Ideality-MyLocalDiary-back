@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.leesang.mylocaldiary.admin.mapper.ReportMapper">
 
-    <resultMap id="reportResultMap" type="com.leesang.mylocaldiary.admin.dto.ReportResponseDTO">
+    <resultMap id="reportResultMap" type="com.leesang.mylocaldiary.admin.dto.ReportDTO">
         <id property="id" column="ID"/>
         <result property="createdAt" column="CREATED_AT" />
         <result property="reportType" column="REPORT_TYPE"/>
@@ -33,7 +33,25 @@
         ORDER BY R.CREATED_AT DESC
     </select>
 
-    <!--  회원별 신고 내역 조회  -->
+    <!--  처리중 인 신고 내역 조회  -->
+    <select id="selectWaitingReportList" resultMap="reportResultMap">
+        SELECT
+            R.ID,
+            R.CREATED_AT,
+            R.REPORT_TYPE,
+            R.REPORTED_ID,
+            R.CONTENT,
+            R.STATUS,
+            R.MEMBER_ID,
+            R.REPORT_REASON_ID
+        FROM
+        REPORT R
+            JOIN MEMBER M ON R.MEMBER_ID = M.ID
+            JOIN REPORT_REASON RR ON R.REPORT_REASON_ID = RR.ID
+        WHERE
+            R.STATUS = 'WAITING'
+        ORDER BY R.CREATED_AT DESC
+    </select>
 
 
 </mapper>

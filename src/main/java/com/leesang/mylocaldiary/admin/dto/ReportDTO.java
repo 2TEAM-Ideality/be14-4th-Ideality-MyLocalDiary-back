@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class ReportResponseDTO {
+public class ReportDTO {
 	private int id;
 	private String createdAt;
 	private String reportType;

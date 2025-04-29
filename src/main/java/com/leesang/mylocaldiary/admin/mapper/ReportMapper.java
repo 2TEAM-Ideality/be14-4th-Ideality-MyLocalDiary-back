@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.leesang.mylocaldiary.admin.dto.ReportResponseDTO;
+import com.leesang.mylocaldiary.admin.dto.ReportDTO;
 
 @Mapper
 public interface ReportMapper {
-	List<ReportResponseDTO> selectReportList();
+	List<ReportDTO> selectReportList();
+
+	List<ReportDTO> selectWaitingReportList();
 }

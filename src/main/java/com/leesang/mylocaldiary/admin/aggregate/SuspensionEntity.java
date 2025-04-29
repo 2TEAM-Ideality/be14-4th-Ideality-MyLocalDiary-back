@@ -31,10 +31,15 @@ public class SuspensionEntity {
 	private LocalDateTime suspensionEndDate;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "suspension_type", nullable = false, length = 20)
+	@Column(name = "type", nullable = false, length = 20)
 	private SuspensionType type;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
 	private MemberEntity member;
+
+	// 정지 기간 연장
+	public void setSuspensionEndDate(LocalDateTime newEndDate) {
+		this.suspensionEndDate = newEndDate;
+	}
 }

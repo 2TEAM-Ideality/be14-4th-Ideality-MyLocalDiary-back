@@ -13,11 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class SuspensionUpdateRequestDTO {
-	private int id;
-	private String suspensionStartDate;
-	private String suspensionEndDate;
-	private String type;
-	private int memberId;
-
+public class RequestReportDTO {
+	private int id;		// 신고 아이디
+	private int memberId;	// 신고 대상 회원
 }
