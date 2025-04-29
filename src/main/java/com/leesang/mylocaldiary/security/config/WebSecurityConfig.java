@@ -2,7 +2,9 @@ package com.leesang.mylocaldiary.security.config;
 
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationFilter;
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationProvider;
+import com.leesang.mylocaldiary.security.filter.JwtFilter;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
+import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,10 +28,12 @@ import java.util.Arrays;
 public class WebSecurityConfig {
 
     private final JwtProvider jwtProvider;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public WebSecurityConfig(JwtProvider jwtProvider) {
+    public WebSecurityConfig(JwtProvider jwtProvider, JwtUtil jwtUtil) {
         this.jwtProvider = jwtProvider;
+        this.jwtUtil = jwtUtil;
     }
 
     @Bean
@@ -69,7 +73,8 @@ public class WebSecurityConfig {
                             return config;
                         })
                 )
-                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
