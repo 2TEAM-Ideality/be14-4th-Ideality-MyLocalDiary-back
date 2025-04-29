@@ -35,8 +35,9 @@ public class KakaoLoginController {
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
 
         String userEmail=userInfo.getKakaoAccount().getEmail();
+        String providerId=userInfo.getId()+"";
 
-        Optional<MemberEntity> optionalMember = memberRepository.findByEmail(userEmail);
+        Optional<MemberEntity> optionalMember = memberRepository.findByProviderAndProviderId("kakao", providerId);
 
         MemberEntity member;
         if (optionalMember.isEmpty()) {
@@ -46,7 +47,7 @@ public class KakaoLoginController {
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .provider("kakao")
-                    .providerId(userInfo.getId()+"")
+                    .providerId(providerId)
                     .role("ROLE_MEMBER")
                     .build();
             memberRepository.save(member);
