@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.leesang.mylocaldiary.admin.dto.ReportDTO;
 import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
-import com.leesang.mylocaldiary.admin.dto.SuspensionCreateRequestDTO;
-import com.leesang.mylocaldiary.admin.dto.SuspensionUpdateRequestDTO;
 import com.leesang.mylocaldiary.admin.service.AdminCommandService;
 import com.leesang.mylocaldiary.admin.service.AdminQueryService;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
@@ -25,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminController {
 
-	private CommonResponseVO commonResponseVO;
 	private final AdminCommandService adminCommandService;  // 커맨드용
 	private final AdminQueryService adminQueryService;		// 조회용
 
@@ -101,11 +97,6 @@ public class AdminController {
 	// 45
 	// 	활성 회원 수
 	// 750
-
-
-
-
-
 
 }
 
