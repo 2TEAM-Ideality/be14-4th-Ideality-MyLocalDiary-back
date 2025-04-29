@@ -25,12 +25,10 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public WebSecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, JwtProvider jwtProvider) {
-        this.customAuthenticationProvider = customAuthenticationProvider;
+    public WebSecurityConfig(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
@@ -42,8 +40,11 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
+        CustomAuthenticationFilter customAuthenticationFilter =
+                new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+        customAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
+                new AntPathRequestMatcher("/api/auth/login", "POST")
+        );
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -67,7 +68,8 @@ public class WebSecurityConfig {
                             config.setAllowCredentials(true);
                             return config;
                         })
-                );
+                )
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
