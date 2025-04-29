@@ -1,31 +1,41 @@
-INSERT INTO member (id, login_id, password, email, birth, nickname, is_public, is_deleted)
+-- 회원 정보
+INSERT INTO member (id, login_id, password, name, email, birth, nickname, bio, created_at, profile_image, status, role)
 VALUES
-    (1, 'user1', 'password1', 'user1@example.com', '1990-01-01', 'UserOne', TRUE, FALSE),
-    (2, 'user2', 'password2', 'user2@example.com', '1992-02-02', 'UserTwo', TRUE, FALSE),
-    (3, 'user3', 'password3', 'user3@example.com', '1993-03-03', 'UserThree', TRUE, FALSE);
+    (1, 'user1', 'pass1', '사용자1', 'user1@example.com', '1990-01-01', 'nick1', '자기소개1', '2025-04-29 03:34:31', 'https://randomuser.me/api/portraits/men/1.jpg', 'ACTIVE', 'MEMBER'),
+    (2, 'user2', 'pass2', '사용자2', 'user2@example.com', '1990-01-01', 'nick2', '자기소개2', '2025-04-29 03:34:31', 'https://randomuser.me/api/portraits/men/2.jpg', 'ACTIVE', 'MEMBER'),
+    (3, 'user3', 'pass3', '사용자3', 'user3@example.com', '1990-01-01', 'nick3', '자기소개3', '2025-04-29 03:34:31', 'https://randomuser.me/api/portraits/men/3.jpg', 'ACTIVE', 'MEMBER');
 
-INSERT INTO follow (id, following_member_id, follow_target_member_id)
+-- 게시글
+INSERT INTO post (id, title, post, created_at, updated_at, member_id)
 VALUES
-    (1, 1, 2), -- 1번 유저가 2번 유저를 팔로우
-    (2, 1, 3); -- 1번 유저가 3번 유저를 팔로우
+    (1, '제목1', '본문 내용 1', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 1),
+    (2, '제목2', '본문 내용 2', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 2),
+    (3, '제목3', '본문 내용 3', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 3);
 
-INSERT INTO post (id, title, post, diary, created_at, updated_at, likes_count, member_id, is_deleted)
+-- 장소
+INSERT INTO place (name, latitude, longitude, orders, thumbnail_image, post_id)
 VALUES
-    (1, '내 게시글 1', '내 첫번째 게시글 본문', '내 첫번째 다이어리', '2025-04-28', '2025-04-28', 0, 1, FALSE),
-    (2, '내 게시글 2', '내 두번째 게시글 본문', '내 두번째 다이어리', '2025-04-28', '2025-04-28', 0, 1, FALSE),
-    (3, '팔로우한 사람 게시글 1', '2번 유저 게시글 본문', '2번 유저 다이어리', '2025-04-28', '2025-04-28', 0, 2, FALSE),
-    (4, '팔로우한 사람 게시글 2', '3번 유저 게시글 본문', '3번 유저 다이어리', '2025-04-28', '2025-04-28', 0, 3, FALSE);
+    ('장소1', 37.51, 126.91, 0, 'https://img.freepik.com/premium-vector/cute-cat-vector-illustration_961307-8342.jpg', 1),
+    ('장소2', 37.52, 126.92, 0, 'https://img.freepik.com/premium-vector/cute-cat-vector-illustration_961307-8342.jpg', 2),
+    ('장소3', 37.53, 126.93, 0, 'https://img.freepik.com/premium-vector/cute-cat-vector-illustration_961307-8342.jpg', 3);
 
-INSERT INTO photo (id, image_url, orders, post_id)
+-- 사진
+INSERT INTO photo (image_url, orders, post_id)
 VALUES
-    (1, 'https://dummyimage.com/600x400/000/fff&text=Post1-Photo1', 1, 1),
-    (2, 'https://dummyimage.com/600x400/000/fff&text=Post2-Photo1', 1, 2),
-    (3, 'https://dummyimage.com/600x400/000/fff&text=Post3-Photo1', 1, 3),
-    (4, 'https://dummyimage.com/600x400/000/fff&text=Post4-Photo1', 1, 4);
+    ('https://picsum.photos/200/300?random=1', 0, 1),
+    ('https://picsum.photos/200/300?random=2', 0, 2),
+    ('https://picsum.photos/200/300?random=3', 0, 3);
 
-INSERT INTO place (id, name, latitude, longitude, orders, thumbnail_image, post_id)
+-- 댓글
+INSERT INTO comment (content, created_at, updated_at, post_id, member_id)
 VALUES
-    (1, '장소 A', 37.5665, 126.9780, 1, NULL, 1),
-    (2, '장소 B', 37.5678, 126.9820, 1, NULL, 2),
-    (3, '장소 C', 37.5700, 126.9900, 1, NULL, 3),
-    (4, '장소 D', 37.5720, 126.9950, 1, NULL, 4);
+    ('댓글 내용 1', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 1, 2),
+    ('댓글 내용 2', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 2, 1),
+    ('댓글 내용 3', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 3, 1);
+
+-- 좋아요
+INSERT INTO likes (created_at, member_id, type, target_id)
+VALUES
+    (NOW(), 2, 'POST', 1),
+    (NOW(), 2, 'POST', 2),
+    (NOW(), 3, 'COMMENT', 1);

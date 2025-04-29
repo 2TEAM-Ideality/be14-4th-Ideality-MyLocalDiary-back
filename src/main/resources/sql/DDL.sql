@@ -42,6 +42,7 @@ CREATE TABLE post (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(255) NOT NULL,
   post TEXT,
+  diary TEXT,
   created_at VARCHAR(255),
   updated_at VARCHAR(255),
   likes_count INT NOT NULL DEFAULT 0,

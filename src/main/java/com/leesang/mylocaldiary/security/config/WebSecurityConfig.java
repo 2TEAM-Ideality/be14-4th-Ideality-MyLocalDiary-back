@@ -49,7 +49,6 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("api/mybatis/posts/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilter(customAuthenticationFilter);
