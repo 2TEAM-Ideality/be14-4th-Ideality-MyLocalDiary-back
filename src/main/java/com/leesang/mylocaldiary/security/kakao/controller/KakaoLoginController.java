@@ -50,6 +50,7 @@ public class KakaoLoginController {
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .provider("kakao")
                     .providerId(providerId)
+                    .role("ROLE_MEMBER")
                     .status("ACTIVE")
                     .role("MEMBER")
                     .build();
