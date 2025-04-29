@@ -51,6 +51,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/follow")).permitAll() // /api/follow 단건 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/follow/stream")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/notifications")).permitAll()
                         .anyRequest().authenticated()
                 )
 //                .addFilter(customAuthenticationFilter)

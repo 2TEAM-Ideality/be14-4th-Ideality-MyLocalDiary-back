@@ -39,4 +39,8 @@ public class Notification {
         this.recievingMemberId = recievingMemberId;
         this.isRead = false; // 생성 시 기본값
     }
+    public void read() {
+        this.isRead = true;
+    }
+
 }
