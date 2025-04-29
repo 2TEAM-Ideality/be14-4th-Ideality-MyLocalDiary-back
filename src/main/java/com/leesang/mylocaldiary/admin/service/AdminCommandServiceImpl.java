@@ -9,13 +9,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.leesang.mylocaldiary.admin.aggregate.ReportEntity;
+import com.leesang.mylocaldiary.admin.aggregate.ReportReasonEntity;
 import com.leesang.mylocaldiary.admin.aggregate.ReportStatus;
+import com.leesang.mylocaldiary.admin.aggregate.ReportType;
 import com.leesang.mylocaldiary.admin.aggregate.SuspensionEntity;
 import com.leesang.mylocaldiary.admin.aggregate.SuspensionType;
 import com.leesang.mylocaldiary.admin.dto.ReportDTO;
 import com.leesang.mylocaldiary.admin.dto.RequestHandleReportDTO;
+import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
+import com.leesang.mylocaldiary.admin.repository.ReportReasonRepository;
 import com.leesang.mylocaldiary.admin.repository.ReportRepository;
 import com.leesang.mylocaldiary.admin.repository.SuspensionRepository;
+import com.leesang.mylocaldiary.common.exception.ErrorCode;
+import com.leesang.mylocaldiary.common.exception.GlobalException;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 
@@ -27,8 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AdminCommandServiceImpl implements AdminCommandService {
 
-	private final ReportRepository reportRepository;
 	private final MemberRepository memberRepository;
+
+	private final ReportRepository reportRepository;
+	private final ReportReasonRepository reportReasonRepository;
+
 	private final SuspensionRepository suspensionRepository;
 
 	// 신고 상태 처리 (처리 완료, 보류)
@@ -37,7 +46,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 	public void handleReport(RequestHandleReportDTO request, String handleType) {
 		// 처리 상태 변경할 신고 내역 : request
 		ReportEntity targetReport = reportRepository.findById(request.getId())
-			.orElseThrow(() -> new IllegalArgumentException("해당 신고가 존재하지 않습니다."));
+			.orElseThrow(() -> new GlobalException(ErrorCode.REPORT_NOT_FOUND));
 
 		if(handleType.equals("reject")){
 			// 반려 처리
@@ -51,7 +60,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 
 		// 1. 신고 대상 회원 가져오기
 		MemberEntity targetMember = memberRepository.findById(request.getMemberId())
-			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+			.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
 
 		// 2. 신고 횟수 증가
 		targetMember.setReportCount(targetMember.getReportCount() + 1);
@@ -112,7 +121,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 	private void extendSuspension(MemberEntity targetMember, int additionalDays) {
 		// 최신 정지 이력 가져오기
 		SuspensionEntity latest = suspensionRepository.findTopByMemberOrderBySuspensionEndDateDesc(targetMember)
-			.orElseThrow(() -> new IllegalStateException("정지 기록이 없습니다."));
+			.orElseThrow(() -> new GlobalException(ErrorCode.SUSPENSION_NOT_FOUND));
 
 		latest.setSuspensionEndDate(latest.getSuspensionEndDate().plusDays(additionalDays));
 		suspensionRepository.save(latest);
@@ -148,10 +157,11 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 	// 회원 영구 탈퇴
 	// 정지 기간 상관 없이 관리자가 임의로 강제 탈퇴시키는 경우
 	@Override
+	@Transactional
 	public void banMember(Integer memberId) {
 		// 1. 신고 대상 회원 가져오기
 		MemberEntity targetMember = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+			.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
 
 		// 2. 회원 상태 변경
 		targetMember.setStatus("BANNED");
@@ -162,8 +172,39 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 
 	// 신고 신청
 	@Override
-	public void createReport(ReportDTO requestReportDTO) {
-		// 신고
+	@Transactional
+	public void createReport(RequestReportDTO requestReportDTO) {
+		// 신고 신청자
+		MemberEntity reporter = memberRepository.findById(requestReportDTO.getMemberId())
+			.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
+
+		// 신고 사유
+		ReportReasonEntity reportReason = reportReasonRepository.findById(requestReportDTO.getReportReasonId())
+			.orElseThrow(() -> new GlobalException(ErrorCode.REPORT_REASON_NOT_FOUND));
+
+		ReportEntity newReport = ReportEntity.builder()
+			.reportType(ReportType.valueOf(requestReportDTO.getReportType())) // POST, COMMENT, MEMBER
+			.reportedId(requestReportDTO.getReportedId())
+			.content(requestReportDTO.getContent())
+			.status(ReportStatus.WAITING) // 무조건 처음엔 처리중(WAITING) 상태
+			.member(reporter) // 신고한 사람
+			.reportReason(reportReason)		// 신고 사유
+			.createdAt(LocalDateTime.now()) // 현재 시간
+			.build();
+
+		reportRepository.save(newReport);
 
 	}
+
 }
+
+  // {
+	//   "id": "1",
+	//   "created_at": "2025.03.13",
+	//   "report_type": "게시글",
+	//   "reported_id": 1,
+	//   "content": "이 게시글은 부적절한 내용을 포함하고 있습니다.",
+	//   "status": "RESOLVED",
+	//   "member_id": 3,
+	//   "report_reason_id": "9"
+	//   },

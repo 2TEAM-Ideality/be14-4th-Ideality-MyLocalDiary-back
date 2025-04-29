@@ -3,6 +3,7 @@ package com.leesang.mylocaldiary.admin.service;
 // import com.leesang.mylocaldiary.admin.dto.ReportRequestDTO;
 import com.leesang.mylocaldiary.admin.dto.ReportDTO;
 import com.leesang.mylocaldiary.admin.dto.RequestHandleReportDTO;
+import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
 
 public interface AdminCommandService {
 
@@ -13,5 +14,5 @@ public interface AdminCommandService {
 	void banMember(Integer memberId);
 
 	// 신고 신청
-	void createReport(ReportDTO requestReportDTO);
+	void createReport(RequestReportDTO requestReportDTO);
 }

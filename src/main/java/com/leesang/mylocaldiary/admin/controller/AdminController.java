@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.leesang.mylocaldiary.admin.dto.ReportDTO;
 import com.leesang.mylocaldiary.admin.dto.ReportDetailDTO;
 import com.leesang.mylocaldiary.admin.dto.RequestHandleReportDTO;
+import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
 import com.leesang.mylocaldiary.admin.dto.SuspensionDTO;
 import com.leesang.mylocaldiary.admin.service.AdminCommandService;
 import com.leesang.mylocaldiary.admin.service.AdminQueryService;
@@ -33,7 +34,7 @@ public class AdminController {
 
 	// 신고 신청 
 	@PostMapping("/report/create")
-	public ResponseEntity<CommonResponseVO<?>> createReport(@RequestBody ReportDTO requestReportDTO) {
+	public ResponseEntity<CommonResponseVO<?>> createReport(@RequestBody RequestReportDTO requestReportDTO) {
 		log.info("신고 신청 들어옴");
 		adminCommandService.createReport(requestReportDTO);
 
