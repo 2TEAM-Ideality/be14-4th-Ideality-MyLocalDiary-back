@@ -1,41 +1,48 @@
--- 회원 정보
-INSERT INTO member (id, login_id, password, name, email, birth, nickname, bio, created_at, profile_image, status, role)
+-- member (회원)
+INSERT INTO member (id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_image)
 VALUES
-    (1, 'user1', 'pass1', '사용자1', 'user1@example.com', '1990-01-01', 'nick1', '자기소개1', '2025-04-29 03:34:31', 'https://randomuser.me/api/portraits/men/1.jpg', 'ACTIVE', 'MEMBER'),
-    (2, 'user2', 'pass2', '사용자2', 'user2@example.com', '1990-01-01', 'nick2', '자기소개2', '2025-04-29 03:34:31', 'https://randomuser.me/api/portraits/men/2.jpg', 'ACTIVE', 'MEMBER'),
-    (3, 'user3', 'pass3', '사용자3', 'user3@example.com', '1990-01-01', 'nick3', '자기소개3', '2025-04-29 03:34:31', 'https://randomuser.me/api/portraits/men/3.jpg', 'ACTIVE', 'MEMBER');
+    (1, 'user1', 'pw1', '민수', 'minsu@example.com', '민수짱', '여행을 좋아하는 사람입니다.', '2025-04-01', 'ACTIVE', 'MEMBER', 'https://randomuser.me/api/portraits/men/1.jpg'),
+    (2, 'user2', 'pw2', '지연', 'jiyeon@example.com', '지연쨩', '카페 탐방러.', '2025-04-02', 'ACTIVE', 'MEMBER', 'https://randomuser.me/api/portraits/women/2.jpg'),
+    (3, 'user3', 'pw3', '동혁', 'donghyuk@example.com', '혁혁혁', '서핑을 좋아하는 개발자.', '2025-04-03', 'ACTIVE', 'MEMBER', 'https://randomuser.me/api/portraits/men/3.jpg');
 
--- 게시글
-INSERT INTO post (id, title, post, created_at, updated_at, member_id)
+-- post (게시글)
+INSERT INTO post (id, title, post, created_at, updated_at, likes_count, member_id, is_deleted)
 VALUES
-    (1, '제목1', '본문 내용 1', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 1),
-    (2, '제목2', '본문 내용 2', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 2),
-    (3, '제목3', '본문 내용 3', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 3);
+    (1, '봄날 벚꽃 나들이', '진짜 예뻤다', '2025-04-10', '2025-04-10', 2, 1, FALSE),
+    (2, '카페 투어', '커피 너무 맛있어', '2025-04-12', '2025-04-12', 1, 2, FALSE),
+    (3, '강릉 여행', '바다가 최고야', '2025-04-15', '2025-04-15', 3, 3, FALSE);
 
--- 장소
-INSERT INTO place (name, latitude, longitude, orders, thumbnail_image, post_id)
+-- place (장소)
+INSERT INTO place (id, name, latitude, longitude, orders, thumbnail_image, post_id)
 VALUES
-    ('장소1', 37.51, 126.91, 0, 'https://img.freepik.com/premium-vector/cute-cat-vector-illustration_961307-8342.jpg', 1),
-    ('장소2', 37.52, 126.92, 0, 'https://img.freepik.com/premium-vector/cute-cat-vector-illustration_961307-8342.jpg', 2),
-    ('장소3', 37.53, 126.93, 0, 'https://img.freepik.com/premium-vector/cute-cat-vector-illustration_961307-8342.jpg', 3);
+    (1, '여의도공원', 37.5265, 126.9259, 1, 'https://placeimg.com/640/480/nature', 1),
+    (2, '브런치카페', 37.5412, 126.9860, 1, 'https://placeimg.com/640/480/coffee', 2),
+    (3, '경포대 해수욕장', 37.8047, 128.9027, 1, 'https://placeimg.com/640/480/beach', 3);
 
--- 사진
-INSERT INTO photo (image_url, orders, post_id)
+-- photo (사진)
+INSERT INTO photo (id, image_url, orders, post_id)
 VALUES
-    ('https://picsum.photos/200/300?random=1', 0, 1),
-    ('https://picsum.photos/200/300?random=2', 0, 2),
-    ('https://picsum.photos/200/300?random=3', 0, 3);
+    (1, 'https://placeimg.com/640/480/nature', 1, 1),
+    (2, 'https://placeimg.com/640/480/coffee', 1, 2),
+    (3, 'https://placeimg.com/640/480/beach', 1, 3);
 
--- 댓글
-INSERT INTO comment (content, created_at, updated_at, post_id, member_id)
+-- likes (좋아요)
+INSERT INTO likes (id, created_at, member_id, type, target_id)
 VALUES
-    ('댓글 내용 1', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 1, 2),
-    ('댓글 내용 2', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 2, 1),
-    ('댓글 내용 3', '2025-04-29 03:34:31', '2025-04-29 03:34:31', 3, 1);
+    (1, '2025-04-11', 2, 'POST', 1),
+    (2, '2025-04-11', 3, 'POST', 1),
+    (3, '2025-04-13', 1, 'POST', 2),
+    (4, '2025-04-15', 1, 'COMMENT', 1),
+    (5, '2025-04-16', 2, 'COMMENT', 1);
 
--- 좋아요
-INSERT INTO likes (created_at, member_id, type, target_id)
+-- comment (댓글)
+INSERT INTO comment (id, content, created_at, post_id, member_id, parent_comment_id, is_deleted)
 VALUES
-    (NOW(), 2, 'POST', 1),
-    (NOW(), 2, 'POST', 2),
-    (NOW(), 3, 'COMMENT', 1);
+    (1, '정말 이뻤겠네요!', '2025-04-11', 1, 2, NULL, FALSE),
+    (2, '다음에 같이 가요', '2025-04-11', 1, 3, 1, FALSE);
+
+-- follow (팔로우)
+INSERT INTO follow (id, following_member_id, follow_target_member_id, status)
+VALUES
+    (1, 1, 2, TRUE),
+    (2, 1, 3, TRUE);
