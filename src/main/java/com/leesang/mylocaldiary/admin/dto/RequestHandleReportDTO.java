@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class RequestReportDTO {
+public class RequestHandleReportDTO {
 	private int id;		// 신고 아이디
 	private int memberId;	// 신고 대상 회원
 }

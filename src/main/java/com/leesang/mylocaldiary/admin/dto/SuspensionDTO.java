@@ -13,7 +13,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class SuspensionResponseDTO {
+public class SuspensionDTO {
 	private int id;
 	private String suspensionStartDate;
 	private String suspensionEndDate;

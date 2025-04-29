@@ -2,7 +2,6 @@ package com.leesang.mylocaldiary.admin.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +13,7 @@ import com.leesang.mylocaldiary.admin.aggregate.ReportStatus;
 import com.leesang.mylocaldiary.admin.aggregate.SuspensionEntity;
 import com.leesang.mylocaldiary.admin.aggregate.SuspensionType;
 import com.leesang.mylocaldiary.admin.dto.ReportDTO;
-import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
+import com.leesang.mylocaldiary.admin.dto.RequestHandleReportDTO;
 import com.leesang.mylocaldiary.admin.repository.ReportRepository;
 import com.leesang.mylocaldiary.admin.repository.SuspensionRepository;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
@@ -35,7 +34,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 	// 신고 상태 처리 (처리 완료, 보류)
 	@Override
 	@Transactional
-	public void handleReport(RequestReportDTO request, String handleType) {
+	public void handleReport(RequestHandleReportDTO request, String handleType) {
 		// 처리 상태 변경할 신고 내역 : request
 		ReportEntity targetReport = reportRepository.findById(request.getId())
 			.orElseThrow(() -> new IllegalArgumentException("해당 신고가 존재하지 않습니다."));
@@ -159,5 +158,12 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 		targetMember.setIsDeleted(true);
 
 		memberRepository.save(targetMember);
+	}
+
+	// 신고 신청
+	@Override
+	public void createReport(ReportDTO requestReportDTO) {
+		// 신고
+
 	}
 }
