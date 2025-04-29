@@ -25,14 +25,10 @@ public class MemberEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-<<<<<<< HEAD
     @Column(name = "name")
     private String name;
 
-    @Column(name = "birth", nullable = false)
-=======
     @Column(name = "birth")
->>>>>>> develop
     private String birth;
 
     @Column(name = "nickname", nullable = false, unique = true)
