@@ -1,6 +1,8 @@
 package com.leesang.mylocaldiary.email.service;
 
+import com.leesang.mylocaldiary.common.exception.GlobalException;
 import com.leesang.mylocaldiary.redis.util.RedisUtil;
+import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,11 @@ public class EmailAuthService {
         String authCodeFromRedis = redisUtil.get(key);
 
         if (authCodeFromRedis == null) {
-            return false;
+            throw new GlobalException(ErrorCode.AUTH_CODE_EXPIRED);
+        }
+
+        if (!authCodeFromRedis.equals(authCode)) {
+            throw new GlobalException(ErrorCode.AUTH_CODE_NOT_MATCHED);
         }
         return authCodeFromRedis.equals(authCode);
     }
@@ -44,10 +50,15 @@ public class EmailAuthService {
     /* 설명. 이메일 인증번호 검증 */
     public boolean verifyEmail(String email) {
         String key = generateVerifyKey(email);
-        Boolean verifyByKey = Boolean.valueOf(redisUtil.get(key));
+        String verifyByKey = redisUtil.get(key);
 
-        if (!verifyByKey) {
-            return false;
+        if (verifyByKey == null) {
+            throw new GlobalException(ErrorCode.EMAIL_VERIFICATION_EXPIRED);
+        }
+
+        if (!Boolean.parseBoolean(verifyByKey)) {
+            // 인증을 시도했지만 아직 인증이 완료되지 않음
+            throw new GlobalException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
         return true;
     }

@@ -3,10 +3,12 @@ package com.leesang.mylocaldiary.auth.service;
 import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestSignUpDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestVerifyEmailDTO;
+import com.leesang.mylocaldiary.common.exception.GlobalException;
 import com.leesang.mylocaldiary.email.service.EmailAuthService;
 import com.leesang.mylocaldiary.email.service.EmailSendService;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void sendVerificationCode(RequestEmailDTO requestEmailDTO) {
+        if (memberRepository.findByEmail(requestEmailDTO.getEmail()).isPresent()) {
+            throw new GlobalException(ErrorCode.DUPLICATE_EMAIL);
+        }
+
         String verificationCode = genereateRandomCode();
         emailAuthService.saveAuthCode(requestEmailDTO.getEmail(), verificationCode);
         emailSendService.sendEmailByVerification(requestEmailDTO.getEmail(), verificationCode);
@@ -59,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         boolean isEmailVerfiy = emailAuthService.verifyEmail(requestSignUpDTO.getEmail());
 
         if (!isEmailVerfiy) {
-            return 0;
+            throw new GlobalException(ErrorCode.EMAIL_NOT_VERIFIED);
         }
         String encodedPassword = passwordEncoder.encode(requestSignUpDTO.getPassword());
         MemberEntity newMember = MemberEntity.builder()
