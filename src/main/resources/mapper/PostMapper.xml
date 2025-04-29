@@ -101,4 +101,22 @@
           AND p.is_deleted = FALSE
     </select>
 
+    <!-- 게시글 좋아요 수 가져오기 -->
+    <select id="countPostLikes" resultType="int">
+        SELECT COUNT(*)
+        FROM likes
+        WHERE post_id = #{postId}
+    </select>
+
+    <!-- 현재 로그인한 사용자가 이 게시글을 좋아요 눌렀는지 여부 -->
+    <select id="isPostLikedByCurrentUser" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM likes
+            WHERE post_id = #{postId}
+              AND member_id = #{memberId}
+        )
+    </select>
+
+
 </mapper>

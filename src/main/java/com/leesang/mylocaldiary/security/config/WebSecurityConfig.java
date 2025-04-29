@@ -46,7 +46,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**"),
-                                         new AntPathRequestMatcher("/api/posts/**")).permitAll()
+                                         new AntPathRequestMatcher("/api/posts/**"),
+                                          new AntPathRequestMatcher("/api/mybatis/posts/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilter(customAuthenticationFilter);
