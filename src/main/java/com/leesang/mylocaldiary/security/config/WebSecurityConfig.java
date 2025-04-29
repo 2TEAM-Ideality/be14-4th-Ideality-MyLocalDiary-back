@@ -38,17 +38,18 @@ public class WebSecurityConfig {
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
+        // CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+        // customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
 
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                    // .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                    .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
                         .anyRequest().authenticated()
-                )
-                .addFilter(customAuthenticationFilter);
+                );
+                // .addFilter(customAuthenticationFilter);
 
         return http.build();
     }

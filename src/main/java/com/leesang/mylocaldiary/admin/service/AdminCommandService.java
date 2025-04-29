@@ -2,11 +2,11 @@ package com.leesang.mylocaldiary.admin.service;
 
 // import com.leesang.mylocaldiary.admin.dto.ReportRequestDTO;
 import com.leesang.mylocaldiary.admin.dto.ReportResponseDTO;
-import com.leesang.mylocaldiary.admin.repository.ReportRepository;
+import com.leesang.mylocaldiary.admin.dto.SuspensionCreateRequestDTO;
 
 import java.util.List;
 
-public interface AdminService {
+public interface AdminCommandService {
 
 	// 신고 목록 조회
 	List<ReportResponseDTO> getReportList();
@@ -18,7 +18,7 @@ public interface AdminService {
 	void handleReport(Integer reportId, boolean isApprove);
 
 	// 회원 정지
-	void suspendMember(Integer memberId, int days);
+	void suspendMember(SuspensionCreateRequestDTO request);
 
 	// 회원 영구 정지
 	void banMember(Integer memberId);

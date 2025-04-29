@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.report.query.dto.aggregate;
+package com.leesang.mylocaldiary.report.aggregate;
 
 import lombok.Getter;
 import lombok.Setter;

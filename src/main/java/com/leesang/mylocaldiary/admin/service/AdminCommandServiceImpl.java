@@ -4,16 +4,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.leesang.mylocaldiary.admin.aggregate.ReportEntity;
 import com.leesang.mylocaldiary.admin.dto.ReportResponseDTO;
+import com.leesang.mylocaldiary.admin.dto.SuspensionCreateRequestDTO;
 import com.leesang.mylocaldiary.admin.repository.ReportRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImpl implements AdminService{
+public class AdminCommandServiceImpl implements AdminCommandService {
 
 	private final ReportRepository reportRepository;
 
@@ -38,9 +40,20 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public void suspendMember(Integer memberId, int days) {
-
+	@Transactional
+	public void suspendMember(SuspensionCreateRequestDTO request) {
+		// Member member = memberRepository.findById(request.getMemberId())
+		// 	.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+		//
+		// Suspension suspension = new Suspension();
+		// suspension.setMember(member);
+		// suspension.setSuspensionStartDate(request.getSuspensionStartDate());
+		// suspension.setSuspensionEndDate(request.getSuspensionEndDate());
+		// suspension.setType(request.getType());
+		//
+		// suspensionRepository.save(suspension);
 	}
+
 
 	@Override
 	public void banMember(Integer memberId) {
