@@ -34,6 +34,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {
+            log.info("애가 가져감");
             // 1. request의 JSON Body를 파싱해서 RequestLoginVO에 매핑
             ObjectMapper objectMapper = new ObjectMapper();
             RequestLoginDTO creds = objectMapper.readValue(request.getInputStream(), RequestLoginDTO.class);

@@ -16,43 +16,63 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Arrays;
+
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtProvider jwtProvider;
 
     @Autowired
-    public WebSecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, JwtProvider jwtProvider) {
-        this.customAuthenticationProvider = customAuthenticationProvider;
+    public WebSecurityConfig(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
     @Bean
     public AuthenticationManager authenticationManager
-        (AuthenticationConfiguration authenticationConfiguration) throws Exception {
+            (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
+        CustomAuthenticationFilter customAuthenticationFilter =
+                new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+        customAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
+                new AntPathRequestMatcher("/api/auth/login", "POST")
+        );
 
         http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).permitAll()    // 관리자 
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll()
-                .anyRequest().authenticated()
-            )
-            .addFilter(customAuthenticationFilter);
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // follow 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/notifications/**")).permitAll() // notifications 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).permitAll() // admin 허용
+                        .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll() // kakao 로그인 허용
+                        .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll() // kakao callback 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilter(customAuthenticationFilter) // 🔥 customAuthenticationFilter 추가
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration config = new CorsConfiguration();
+                            config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+                            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+                            config.setAllowedHeaders(Arrays.asList("*"));
+                            config.setAllowCredentials(true);
+                            return config;
+                        })
+                )
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }
