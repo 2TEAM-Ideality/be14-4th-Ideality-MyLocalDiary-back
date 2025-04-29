@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leesang.mylocaldiary.post.mybatis.mapper.PostMapper">
+
+    <resultMap id="PostDetailResponseMap" type="com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse">
+        <id property="postId" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="post" column="post_content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="memberId" column="member_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="profileImage" column="profile_image"/>
+
+        <collection property="photos" ofType="com.leesang.mylocaldiary.post.mybatis.dto.PhotoInfo">
+            <id property="id" column="photo_id"/>
+            <result property="imageUrl" column="image_url"/>
+            <result property="orders" column="photo_orders"/>
+        </collection>
+
+        <collection property="places" ofType="com.leesang.mylocaldiary.post.mybatis.dto.PlaceInfo">
+            <id property="id" column="place_id"/>
+            <result property="name" column="place_name"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+            <result property="thumbnailImage" column="thumbnail_image"/>
+            <result property="orders" column="place_orders"/>
+        </collection>
+    </resultMap>
+
+    <select id="findMyPostsForMap" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse">
+        SELECT
+            p.id AS postId,
+            pl.name AS placeName,
+            pl.latitude,
+            pl.longitude,
+            pl.thumbnail_image AS thumbnailImage
+        FROM post p
+                 JOIN place pl ON p.id = pl.post_id
+        WHERE p.member_id = #{memberId}
+          AND p.is_deleted = FALSE
+    </select>
+
+    <select id="findMyPostDetail" resultMap="PostDetailResponseMap">
+        SELECT
+            p.id AS post_id,
+            p.title,
+            p.post AS post_content,
+            p.created_at,
+            m.id AS member_id,
+            m.nickname,
+            m.profile_image,
+
+            ph.id AS photo_id,
+            ph.image_url,
+            ph.orders AS photo_orders,
+
+            pl.id AS place_id,
+            pl.name AS place_name,
+            pl.latitude,
+            pl.longitude,
+            pl.thumbnail_image,
+            pl.orders AS place_orders
+        FROM post p
+                 JOIN member m ON p.member_id = m.id
+                 LEFT JOIN photo ph ON ph.post_id = p.id
+                 LEFT JOIN place pl ON pl.post_id = p.id
+        WHERE p.id = #{postId}
+          AND p.member_id = #{memberId}
+          AND p.is_deleted = FALSE
+    </select>
+
+    <select id="findFollowedPostsForMap" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse">
+        SELECT
+            p.id AS postId,
+            p.member_id AS memberId,
+            pl.name AS placeName,
+            pl.latitude,
+            pl.longitude,
+            pl.thumbnail_image AS thumbnailImage
+        FROM follow f
+                 JOIN post p ON p.member_id = f.follow_target_member_id
+                 JOIN place pl ON p.id = pl.post_id
+        WHERE f.following_member_id = #{memberId}
+          AND f.status = TRUE
+          AND p.is_deleted = FALSE
+    </select>
+
+    <select id="findFollowedPostDetail" resultMap="PostDetailResponseMap">
+        SELECT
+            p.id AS post_id,
+            p.title,
+            p.post AS post_content,
+            p.created_at,
+            m.id AS member_id,
+            m.nickname,
+            m.profile_image,
+
+            ph.id AS photo_id,
+            ph.image_url,
+            ph.orders AS photo_orders,
+
+            pl.id AS place_id,
+            pl.name AS place_name,
+            pl.latitude,
+            pl.longitude,
+            pl.thumbnail_image,
+            pl.orders AS place_orders
+        FROM follow f
+                 JOIN post p ON p.member_id = f.follow_target_member_id
+                 JOIN member m ON p.member_id = m.id
+                 LEFT JOIN photo ph ON ph.post_id = p.id
+                 LEFT JOIN place pl ON pl.post_id = p.id
+        WHERE p.id = #{postId}
+          AND f.following_member_id = #{memberId}
+          AND f.status = TRUE
+          AND p.is_deleted = FALSE
+    </select>
+
+    <select id="countPostLikes" resultType="int">
+        SELECT likes_count
+        FROM post
+        WHERE id = #{postId}
+    </select>
+
+    <select id="countCommentLikes" resultType="int">
+        SELECT likes_count
+        FROM post
+        WHERE id = #{commentId}
+    </select>
+
+    <select id="isPostLikedByCurrentUser" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM likes
+            WHERE target_id = #{postId}
+              AND member_id = #{memberId}
+              AND type = 'POST'
+        )
+    </select>
+
+    <select id="findCommentsByPostId" resultType="com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse">
+        SELECT
+            c.id AS commentId,
+            c.content,
+            c.created_at,
+            c.member_id,
+            m.nickname,
+            m.profile_image,
+            (SELECT COUNT(*) FROM likes WHERE target_id = c.id AND type = 'COMMENT') AS likeCount
+        FROM comment c
+                 JOIN member m ON c.member_id = m.id
+        WHERE c.post_id = #{postId}
+          AND c.parent_comment_id IS NULL
+          AND c.is_deleted = FALSE
+        ORDER BY c.created_at ASC
+    </select>
+
+    <select id="findRepliesByParentCommentId" resultType="com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse">
+        SELECT
+            c.id AS commentId,
+            c.content,
+            c.created_at,
+            c.member_id,
+            m.nickname,
+            m.profile_image,
+            (SELECT COUNT(*) FROM likes WHERE target_id = c.id AND type = 'COMMENT') AS likeCount
+        FROM comment c
+                 JOIN member m ON c.member_id = m.id
+        WHERE c.parent_comment_id = #{parentCommentId}
+          AND c.is_deleted = FALSE
+        ORDER BY c.created_at ASC
+    </select>
+
+</mapper>
