@@ -3,6 +3,7 @@ package com.leesang.mylocaldiary.security.config;
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationFilter;
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationProvider;
 import com.leesang.mylocaldiary.security.filter.JwtFilter;
+import com.leesang.mylocaldiary.security.handler.JwtAuthenticationEntryPoint;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,13 @@ public class WebSecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final JwtUtil jwtUtil;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    public WebSecurityConfig(JwtProvider jwtProvider, JwtUtil jwtUtil) {
+    public WebSecurityConfig(JwtProvider jwtProvider, JwtUtil jwtUtil, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtProvider = jwtProvider;
         this.jwtUtil = jwtUtil;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -53,6 +56,9 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // follow 허용
@@ -62,7 +68,6 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilter(customAuthenticationFilter) // 🔥 customAuthenticationFilter 추가
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();

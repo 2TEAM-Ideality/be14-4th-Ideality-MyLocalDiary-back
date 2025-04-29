@@ -57,6 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 log.info("JWT 인증 성공 - loginId: {}", loginId);
+                log.info("JWT 인증 성공 - role: {}", role);
             }
         }
 
