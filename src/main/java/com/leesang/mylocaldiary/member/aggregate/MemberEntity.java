@@ -18,7 +18,7 @@ public class MemberEntity {
     @Column(name = "login_id")
     private String loginId;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -49,6 +49,10 @@ public class MemberEntity {
     @Column(name = "suspension_count", nullable = false)
     private Integer suspensionCount = 0;
 
+    @Builder.Default
+    @Column(name = "report_count", nullable = false)
+    private Integer reportCount = 0;
+
     @Column(name = "profile_music")
     private String profileMusic;
 
@@ -68,4 +72,5 @@ public class MemberEntity {
 
     @Column(name = "role")
     private String role;
+
 }

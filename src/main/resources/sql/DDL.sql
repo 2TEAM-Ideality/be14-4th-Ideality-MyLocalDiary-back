@@ -28,6 +28,7 @@ CREATE TABLE member (
   profile_image TEXT,
   status VARCHAR(255) NOT NULL,
   suspension_count INT NOT NULL DEFAULT 0,
+  report_count INT NOT NULL DEFAULT 0,
   profile_music VARCHAR(255),
   provider VARCHAR(255),
   provider_id VARCHAR(255),

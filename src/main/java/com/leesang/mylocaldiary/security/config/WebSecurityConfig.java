@@ -32,24 +32,26 @@ public class WebSecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager
-            (AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        // CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
-        // customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // 로그인 엔드포인트
 
         http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authz -> authz
-                    // .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                    .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
-                        .anyRequest().authenticated()
-                );
-                // .addFilter(customAuthenticationFilter);
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authz -> authz
+                .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll()
+                .anyRequest().authenticated()
+            )
+            .addFilter(customAuthenticationFilter);
 
         return http.build();
     }

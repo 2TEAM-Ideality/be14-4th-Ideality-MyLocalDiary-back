@@ -64,18 +64,33 @@ public class AdminController {
 	// }
 
 
-	// TODO. 신고 처리 상태 변경 - 회원 정지
-	@PatchMapping("/suspend")
-	public CommonResponseVO suspendMember(@RequestBody SuspensionCreateRequestDTO request) {
-		log.info("회원 정지 요청 들어옴, memberId = {}", request.getMemberId());
+	// TODO. 신고 처리
+	// @PatchMapping("/report")
+	// public CommonResponseVO handleReport(@RequestBody ReportHandleRequestDTO) {
+	//
+	// }
+	// @PatchMapping("/suspend")
+	// public CommonResponseVO suspendMember(@RequestBody SuspensionCreateRequestDTO request) {
+	// 	log.info("회원 정지 요청 들어옴, memberId = {}", request.getMemberId());
+	//
+	// 	adminCommandService.suspendMember(request);
+	//
+	// 	return CommonResponseVO.success(
+	// 		"회원 정지 성공",
+	// 		null
+	// 	);
+	// }
 
-		adminCommandService.suspendMember(request);
-
-		return CommonResponseVO.success(
-			"회원 정지 성공",
-			null
-		);
-	}
+	/*
+		신고 들어옴 -> 신고 처리 (수동) -> 처리 완료 시
+		:   member.report_count -> ++
+			member.status -> suspend  정지로 바꾸기
+		    member.suspension_count -> ++  정지 횟수 올리기
+	 */
+	// 1회 신고 -> 3일 정지
+	// 3회 신고 -> 30일 정지
+	//
+	// 3번 정지 시,  영구 탈퇴
 
 
 
