@@ -8,7 +8,9 @@ spring:
     import: classpath:secret.properties
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://host.docker.internal:3306/my_local_diary
+#    url: jdbc:mariadb://host.docker.internal:3306/my_local_diary # 도커용
+#    url: jdbc:mysql://host.docker.internal:3306/my_local_diary # mysql 환경인 사람
+    url: jdbc:mariadb://host.docker.internal:3306/my_local_diary # mariadb 환경인 사람
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   profiles:
