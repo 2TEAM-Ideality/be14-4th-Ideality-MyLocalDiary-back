@@ -60,4 +60,3 @@ kakao:
 logging:
   level:
     org.springframework.security: DEBUG
-
