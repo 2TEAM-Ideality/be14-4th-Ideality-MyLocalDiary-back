@@ -72,3 +72,13 @@ values
         null,
         'LOCAL'
     );
+
+
+
+
+INSERT INTO follow (following_member_id, follow_target_member_id, status) VALUES
+                                                                              (1, 2, true),   -- user1 → 혜영쓰 (팔로잉)
+                                                                              (1, 3, false),  -- user1 → 동한개노답 (대기중)
+                                                                              (2, 4, true),   -- user2 → 민선짱 (팔로잉)
+                                                                              (3, 1, true),   -- user3 → 민수짱 (팔로잉)
+                                                                              (4, 2, false);  -- user4 → 혜영쓰 (대기중)
