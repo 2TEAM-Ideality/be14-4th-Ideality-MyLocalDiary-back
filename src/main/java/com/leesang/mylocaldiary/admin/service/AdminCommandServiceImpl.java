@@ -20,7 +20,6 @@ import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
 import com.leesang.mylocaldiary.admin.repository.ReportReasonRepository;
 import com.leesang.mylocaldiary.admin.repository.ReportRepository;
 import com.leesang.mylocaldiary.admin.repository.SuspensionRepository;
-import com.leesang.mylocaldiary.comment.aggregate.CommentEntity;
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import com.leesang.mylocaldiary.common.exception.GlobalException;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;

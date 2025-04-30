@@ -3,6 +3,7 @@ package com.leesang.mylocaldiary.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -40,11 +41,48 @@ public class JwtUtil {
     }
 
     // Claims 추출
-    public Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public Claims getClaimsAllowExpired(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims(); // 🔥 만료되었어도 Claims 꺼내기
+        }
+    }
+
+    // Access Token 추출
+    public String extractAccessToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
+    }
+
+    // Refresh Token 추출
+    public String extractRefreshToken(HttpServletRequest request) {
+        return request.getHeader("Refresh-Token");
+    }
+
+    // MemberId(subject) 추출
+    public Long getUserIdFromToken(String token) {
+        return Long.valueOf(getClaimsAllowExpired(token).getSubject());
+    }
+
+    // Email Claim 추출
+    public String getEmailFromToken(String token) {
+        return getClaimsAllowExpired(token).get("email", String.class);
+    }
+
+    // Role Claim 추출
+    public String getRoleFromToken(String token) {
+        return getClaimsAllowExpired(token).get("role", String.class);
+    }
+
+    public long getExpiration(String accessToken) {
+        return  getClaimsAllowExpired(accessToken).getExpiration().getTime();
     }
 }

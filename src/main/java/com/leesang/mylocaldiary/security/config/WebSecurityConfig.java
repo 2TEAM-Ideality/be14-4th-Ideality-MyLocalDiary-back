@@ -8,6 +8,7 @@ import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,12 +29,15 @@ public class WebSecurityConfig {
     private final JwtProvider jwtProvider;
     private final JwtUtil jwtUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final RedisTemplate<String, String> redisTemplate;  // 🔥 RedisTemplate 주입 추가
+
 
     @Autowired
-    public WebSecurityConfig(JwtProvider jwtProvider, JwtUtil jwtUtil, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    public WebSecurityConfig(JwtProvider jwtProvider, JwtUtil jwtUtil, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, RedisTemplate<String, String> redisTemplate) {
         this.jwtProvider = jwtProvider;
         this.jwtUtil = jwtUtil;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.redisTemplate = redisTemplate;
     }
 
     @Bean
@@ -45,7 +49,7 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(authenticationManager, jwtProvider);
+                new CustomAuthenticationFilter(authenticationManager, jwtProvider, redisTemplate);
         customAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
                 new AntPathRequestMatcher("/api/auth/login", "POST")
         );
@@ -64,6 +68,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll() // kakao 로그인 허용
                         .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll() // kakao callback 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
+                        .requestMatchers("/api/member/reissue").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors

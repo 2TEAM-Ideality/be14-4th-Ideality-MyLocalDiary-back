@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.Collections;
 
@@ -37,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             // 2. 토큰 유효성 검증
             if (jwtUtil.validateToken(token)) {
-                Claims claims = jwtUtil.getClaims(token);
+                Claims claims = jwtUtil.getClaimsAllowExpired(token);
 
                 String loginId = claims.get("email", String.class); // 🔥 우리가 넣은건 email (loginId)
                 String role = claims.get("role", String.class);
@@ -57,6 +56,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 log.info("JWT 인증 성공 - loginId: {}", loginId);
                 log.info("JWT 인증 성공 - role: {}", role);
+            } else {
+                log.warn("JWT 토큰이 유효하지 않음. 인증 처리 생략");
             }
         }
 

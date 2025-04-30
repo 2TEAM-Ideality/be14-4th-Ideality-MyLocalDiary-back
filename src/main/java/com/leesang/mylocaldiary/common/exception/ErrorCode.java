@@ -12,6 +12,9 @@ public enum ErrorCode {
     EMAIL_VERIFICATION_MISMATCH(HttpStatus.UNAUTHORIZED, "이메일 인증 코드가 일치하지 않습니다."),
     EMAIL_NOT_VERIFIED(HttpStatus.UNAUTHORIZED, "인증되지 않는 이메일입니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 사용중인 이메일입니다."),
+    REFRESH_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 재로그인 하십시오."),
+    TOKEN_NOT_EQUALS(HttpStatus.UNAUTHORIZED, "토큰이 일치하지 않습니다. 다시 로그인 해주시길 바랍니다."),
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "허용되지 않은 접근입니다."),
 
     // ADMIN
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 신고 내역을 찾을 수 없습니다."),
