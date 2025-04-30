@@ -45,6 +45,8 @@ public class S3Uploader {
     public String upload(MultipartFile multipartFile, String folderName) {
         String originalFilename = multipartFile.getOriginalFilename();
         String ext = originalFilename.substring(originalFilename.lastIndexOf('.'));
+
+        // S3 내 실제 경로 구조 반영
         String fileName = folderName + "/" + UUID.randomUUID() + ext;
 
         try {
