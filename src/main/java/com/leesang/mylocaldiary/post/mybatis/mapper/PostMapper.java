@@ -1,6 +1,7 @@
 package com.leesang.mylocaldiary.post.mybatis.mapper;
 
 import com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.PostDateResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse;
 import org.apache.ibatis.annotations.Mapper;
@@ -12,6 +13,8 @@ import java.util.List;
 public interface PostMapper {
 
     List<PostSimpleResponse> findMyPostsForMap(@Param("memberId") Integer memberId);
+
+    List<PostDateResponse> findMyPostsForCalendar(Integer memberId);
 
     PostDetailResponse findMyPostDetail(@Param("postId") Integer postId, @Param("memberId") Integer memberId);
 
