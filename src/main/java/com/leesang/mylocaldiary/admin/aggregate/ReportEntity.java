@@ -2,7 +2,7 @@ package com.leesang.mylocaldiary.admin.aggregate;
 
 import java.time.LocalDateTime;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -14,16 +14,15 @@ import com.leesang.mylocaldiary.admin.aggregate.ReportStatus;
 import com.leesang.mylocaldiary.admin.aggregate.ReportType;
 import com.leesang.mylocaldiary.admin.aggregate.SuspensionEntity;
 import com.leesang.mylocaldiary.admin.aggregate.SuspensionType;
-import com.leesang.mylocaldiary.admin.dto.ReportDTO;
-import com.leesang.mylocaldiary.admin.dto.RequestHandleReportDTO;
 import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
 import com.leesang.mylocaldiary.admin.repository.ReportReasonRepository;
 import com.leesang.mylocaldiary.admin.repository.ReportRepository;
 import com.leesang.mylocaldiary.admin.repository.SuspensionRepository;
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import com.leesang.mylocaldiary.common.exception.GlobalException;
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
-import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.post.jpa.entity.Post;
 import com.leesang.mylocaldiary.post.jpa.repository.PostRepository;
 
@@ -89,7 +88,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 		if (updatedReportCount == 1) {
 			suspendMember(targetMember, 3); // 3일 정지
 		} else if (updatedReportCount == 2) {
-			if ("SUSPENDED".equals(targetMember.getStatus())) {
+			if (MemberStatus.SUSPENDED.equals(targetMember.getStatus())) {
 				// 이미 정지 상태면 기간 연장
 				extendSuspension(targetMember, 30); // +30일 연장
 			} else {
@@ -97,7 +96,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 			}
 		} else if (updatedReportCount >= 3) {
 			// 영구 탈퇴 처리
-			targetMember.setStatus("DELETED");
+			targetMember.setStatus(MemberStatus.DELETED);
 			targetMember.setIsDeleted(true);
 			targetMember.setSuspensionCount(targetMember.getSuspensionCount() + 1);
 		}
@@ -121,7 +120,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 
 	// 회원 정지
 	private void suspendMember(MemberEntity member, int days) {
-		member.setStatus("SUSPENDED");
+		member.setStatus(MemberStatus.SUSPENDED);
 		member.setSuspensionCount(member.getSuspensionCount() + 1);
 
 		SuspensionEntity suspension = SuspensionEntity.builder()
@@ -162,8 +161,8 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 		for (SuspensionEntity suspension : endedSuspensions) {
 			MemberEntity member = suspension.getMember();
 
-			if ("SUSPENDED".equals(member.getStatus())) {
-				member.setStatus("ACTIVE");
+			if (MemberStatus.SUSPENDED.equals(member.getStatus())) {
+				member.setStatus(MemberStatus.ACTIVE);
 				memberRepository.save(member);
 
 				log.info("✅ 회원 ID={} 정지 해제 완료", member.getId());
@@ -182,7 +181,7 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 			.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
 
 		// 2. 회원 상태 변경
-		targetMember.setStatus("BANNED");
+		targetMember.setStatus(MemberStatus.BANNED);
 		targetMember.setIsDeleted(true);
 
 		memberRepository.save(targetMember);

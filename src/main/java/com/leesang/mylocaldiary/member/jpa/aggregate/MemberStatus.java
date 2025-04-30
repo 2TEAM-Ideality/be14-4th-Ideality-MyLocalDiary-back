@@ -1,7 +1,7 @@
 package com.leesang.mylocaldiary.member.jpa.aggregate;
 
 public enum MemberStatus {
-    SUSPENED,
+    SUSPENDED,
     DELETED,
     ACTIVE,
     BANNED
