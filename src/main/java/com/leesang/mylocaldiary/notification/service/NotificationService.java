@@ -29,23 +29,23 @@ public class NotificationService {
 
 
     @Transactional
-    public void sendFollowNotification(Long receiverId, Long followerId, String followerName) {
-        // 날짜 포맷팅
+    public void sendFollowNotification(Long receiverId, Long followerId, String message) {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        // 1. DB에 저장
         Notification notification = new Notification(
-                "FOLLOW",             // type
-                followerId,            // targetId (팔로우한 사람 ID)
-                followerName + "님이 당신을 팔로우했습니다!", // content
-                now,                   // createdAt
-                receiverId             // recievingMemberId
+                "FOLLOW",
+                followerId,
+                message,  // ✅ 메시지를 그대로 사용
+                now,
+                receiverId
         );
+
         notificationRepository.save(notification);
 
-        // 2. SSE로 실시간 알림 보내기
-        followSseController.sendFollowNotification(receiverId, followerName);
+        // 💡 Notification 객체를 그대로 SSE로 전송
+        followSseController.sendFollowNotification(receiverId, notification);
     }
+
 
     public List<Notification> getNotifications(Long memberId) {
         return notificationRepository.findByRecievingMemberIdOrderByIdDesc(memberId);
