@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.member.aggregate;
+package com.leesang.mylocaldiary.member.jpa.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,8 @@ public class MemberEntity {
     private String profileImage;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MemberStatus status;
 
     @Builder.Default
     @Column(name = "suspension_count", nullable = false)
@@ -60,7 +61,8 @@ public class MemberEntity {
     private String profileMusic;
 
     @Column(name = "provider")
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    private MemberProvider provider;
 
     @Column(name = "provider_id")
     private String providerId;
@@ -74,6 +76,7 @@ public class MemberEntity {
     private Boolean isDeleted = false;
 
     @Column(name = "role")
+<<<<<<< HEAD:src/main/java/com/leesang/mylocaldiary/member/aggregate/MemberEntity.java
     private String role;
 
     // 신고 횟수 증가
@@ -95,4 +98,8 @@ public class MemberEntity {
     public void setSuspensionCount(int newSuspensionCount) {
         this.suspensionCount = newSuspensionCount;
     }
+=======
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole;
+>>>>>>> 860506339e60a73eb44c711f544d34c59d28b5f7:src/main/java/com/leesang/mylocaldiary/member/jpa/aggregate/MemberEntity.java
 }

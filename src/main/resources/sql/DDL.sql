@@ -30,12 +30,13 @@ CREATE TABLE member (
   suspension_count INT NOT NULL DEFAULT 0,
   report_count INT NOT NULL DEFAULT 0,
   profile_music VARCHAR(255),
-  provider VARCHAR(255),
+  provider VARCHAR(255) NOT NULL,
   provider_id VARCHAR(255),
   is_public BOOLEAN NOT NULL DEFAULT FALSE,
   is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
   role VARCHAR(255) NOT NULL,
   CHECK (status IN ('SUSPENDED', 'DELETED', 'ACTIVE')),
+  CHECK (provider IN ('LOCAL', 'KAKAO')),
   CHECK (role IN ('MEMBER', 'ADMIN'))
 );
 

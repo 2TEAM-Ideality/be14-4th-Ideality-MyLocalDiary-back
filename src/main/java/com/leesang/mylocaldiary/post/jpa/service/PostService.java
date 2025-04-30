@@ -1,6 +1,6 @@
 package com.leesang.mylocaldiary.post.jpa.service;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
 import com.leesang.mylocaldiary.post.jpa.entity.Photo;
 import com.leesang.mylocaldiary.post.jpa.entity.Place;

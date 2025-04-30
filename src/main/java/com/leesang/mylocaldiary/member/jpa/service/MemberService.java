@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.member.service;
+package com.leesang.mylocaldiary.member.jpa.service;
 
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import jakarta.servlet.http.HttpServletRequest;

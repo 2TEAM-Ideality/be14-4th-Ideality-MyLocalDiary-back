@@ -1,7 +1,7 @@
 package com.leesang.mylocaldiary.security.filter;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
-import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.details.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +51,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 loginMember.getLoginId(),
                 loginMember.getPassword(),
                 loginMember.getEmail(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + loginMember.getRole())),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + loginMember.getMemberRole())),
                 loginMember.getIsDeleted(),
                 loginMember.getStatus()
         );
