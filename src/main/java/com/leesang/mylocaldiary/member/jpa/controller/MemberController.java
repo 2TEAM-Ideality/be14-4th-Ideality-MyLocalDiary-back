@@ -1,7 +1,7 @@
-package com.leesang.mylocaldiary.member.controller;
+package com.leesang.mylocaldiary.member.jpa.controller;
 
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
-import com.leesang.mylocaldiary.member.service.MemberService;
+import com.leesang.mylocaldiary.member.jpa.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

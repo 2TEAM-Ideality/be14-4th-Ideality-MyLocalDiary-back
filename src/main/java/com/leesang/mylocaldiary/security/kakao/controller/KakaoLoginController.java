@@ -1,14 +1,16 @@
 package com.leesang.mylocaldiary.security.kakao.controller;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
-import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberProvider;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberRole;
+import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.kakao.dto.LoginResponseDto;
 import com.leesang.mylocaldiary.security.kakao.service.KakaoService;
 import com.leesang.mylocaldiary.security.kakao.dto.KakaoUserInfoResponseDto;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +39,7 @@ public class KakaoLoginController {
         String userEmail=userInfo.getKakaoAccount().getEmail();
         String providerId=userInfo.getId()+"";
 
-        Optional<MemberEntity> optionalMember = memberRepository.findByProviderAndProviderId("kakao", providerId);
+        Optional<MemberEntity> optionalMember = memberRepository.findByProviderAndProviderId(MemberProvider.KAKAO, providerId);
 
         MemberEntity member;
         String responseMessage="";
@@ -48,11 +50,10 @@ public class KakaoLoginController {
                     .birth("1900-01-01")   // 카카오에서 받아올 수 없어서 임의의 정보 입력
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                    .provider("kakao")
+                    .provider(MemberProvider.KAKAO)
                     .providerId(providerId)
-                    .role("ROLE_MEMBER")
-                    .status("ACTIVE")
-                    .role("MEMBER")
+                    .status(MemberStatus.ACTIVE)
+                    .memberRole(MemberRole.MEMBER)
                     .build();
             memberRepository.save(member);
             log.info("member registered");

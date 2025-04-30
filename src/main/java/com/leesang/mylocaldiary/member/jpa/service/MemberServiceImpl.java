@@ -1,9 +1,9 @@
-package com.leesang.mylocaldiary.member.service;
+package com.leesang.mylocaldiary.member.jpa.service;
 
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import com.leesang.mylocaldiary.common.exception.GlobalException;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
-import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
