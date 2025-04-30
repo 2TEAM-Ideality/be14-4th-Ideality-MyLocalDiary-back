@@ -8,6 +8,8 @@ import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.email.service.EmailAuthService;
 import com.leesang.mylocaldiary.email.service.EmailSendService;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.aggregate.Role;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import com.leesang.mylocaldiary.redis.config.RedisConfig;
@@ -23,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Random;
 
@@ -88,8 +92,9 @@ public class AuthServiceImpl implements AuthService {
                 .birth(requestSignUpDTO.getBirth())
                 .nickname(requestSignUpDTO.getNickname())
                 .isPublic(requestSignUpDTO.getIsPublic())
-                .status("ACTIVE")
-                .role("MEMBER")
+                .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .status(MemberStatus.ACTIVE)
+                .role(Role.MEMBER)
                 .build();
 
         memberRepository.save(newMember);

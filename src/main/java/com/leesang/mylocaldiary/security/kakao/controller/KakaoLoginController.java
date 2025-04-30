@@ -1,6 +1,8 @@
 package com.leesang.mylocaldiary.security.kakao.controller;
 
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.aggregate.Role;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.kakao.dto.LoginResponseDto;
@@ -50,9 +52,8 @@ public class KakaoLoginController {
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .provider("kakao")
                     .providerId(providerId)
-                    .role("ROLE_MEMBER")
-                    .status("ACTIVE")
-                    .role("MEMBER")
+                    .status(MemberStatus.ACTIVE)
+                    .role(Role.MEMBER)
                     .build();
             memberRepository.save(member);
             log.info("member registered");
