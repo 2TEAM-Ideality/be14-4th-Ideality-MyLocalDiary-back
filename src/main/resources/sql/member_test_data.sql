@@ -73,6 +73,23 @@ values
         'LOCAL'
     );
 
+INSERT INTO member
+(id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_music, birth, provider,is_public)
+VALUES
+    (6,
+     'user5',
+     '$2a$12$8uTmz0e9sU9p5D9t8XQ1c.0U9zF3YxS.JnH8sP3Cz8eQ0aZhB1xqK',  -- 예시 암호화된 패스워드
+     '한결',
+     'hangyeol@example.com',
+     '럭키걸모카',
+     '음악을 사랑하는 사람입니다.',
+     '2025-04-04',
+     'ACTIVE',
+     'MEMBER',
+     'https://rococo-cocada-2c23e0.netlify.app/audio/아일릿 - Lucky Girl Syndrome.flac',
+     '1999-09-09',
+     'LOCAL',
+     1);
 
 
 
