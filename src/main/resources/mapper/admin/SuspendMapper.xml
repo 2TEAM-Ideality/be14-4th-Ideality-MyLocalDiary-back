@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leesang.mylocaldiary.admin.mapper.SuspensionMapper">
+    <resultMap id="suspensionResultMap" type="com.leesang.mylocaldiary.admin.dto.SuspensionDTO">
+        <id property="id" column="ID"/>
+        <result property="suspensionStartDate"  column="SUSPENSION_START_DATE"/>
+        <result property="suspensionEndDate"  column="SUSPENSION_END_DATE"/>
+        <result property="type" column="TYPE"/>
+        <result property="memberId" column="MEMBER_ID"/>
+    </resultMap>
+
+    <!-- 규제 내역 전체 조회 -->
+    <select id="selectSuspensionList" resultMap="suspensionResultMap">
+        SELECT
+            s.id,
+            s.suspension_start_date,
+            s.suspension_end_date,
+            s.type,
+            s.member_id
+        FROM
+            suspension s
+        JOIN
+        member m
+        ON
+        s.member_id = m.id
+        ORDER BY
+        s.suspension_start_date DESC
+    </select>
+</mapper>
