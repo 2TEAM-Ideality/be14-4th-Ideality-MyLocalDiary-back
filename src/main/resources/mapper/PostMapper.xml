@@ -41,6 +41,14 @@
           AND p.is_deleted = FALSE
     </select>
 
+    <select id="findMyPostsForCalendar" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostDateResponse">
+        SELECT
+               p.id AS postId,
+               p.created_at AS createdAt
+          FROM post p
+         WHERE member_id = #{memberId}
+    </select>
+
     <select id="findMyPostDetail" resultMap="PostDetailResponseMap">
         SELECT
             p.id AS post_id,
