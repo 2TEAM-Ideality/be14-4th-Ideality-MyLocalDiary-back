@@ -1,5 +1,6 @@
 package com.leesang.mylocaldiary.security.kakao.controller;
 
+import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.jpa.aggregate.MemberStatus;
 import com.leesang.mylocaldiary.member.jpa.aggregate.MemberProvider;
@@ -11,6 +12,7 @@ import com.leesang.mylocaldiary.security.kakao.service.KakaoService;
 import com.leesang.mylocaldiary.security.kakao.dto.KakaoUserInfoResponseDto;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ public class KakaoLoginController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/callback")
-    public ResponseEntity<LoginResponseDto> callback(@RequestParam("code") String code) {
+    public ResponseEntity<CommonResponseVO<Object>> callback(@RequestParam("code") String code) {
         String accessToken = kakaoService.getAccessTokenFromKakao(code);
 
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
@@ -47,7 +49,6 @@ public class KakaoLoginController {
         if (optionalMember.isEmpty()) {
             member = MemberEntity.builder()
                     .email(userEmail)
-                    .birth("1900-01-01")   // 카카오에서 받아올 수 없어서 임의의 정보 입력
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .provider(MemberProvider.KAKAO)
@@ -64,6 +65,9 @@ public class KakaoLoginController {
         }
 
         String jwtToken=jwtProvider.generateAccessToken(member.getId(),userEmail, "ROLE_MEMBER");
+        log.info("jwtToken={}", jwtToken);
+        String refreshToken = jwtProvider.generateRefreshToken(member.getId());
+        log.info("refreshToken={}", refreshToken);
 
         if(responseMessage.length()==0){
             responseMessage="카카오 계정으로 로그인 성공";
@@ -71,13 +75,14 @@ public class KakaoLoginController {
             responseMessage+=", 카카오 계정으로 로그인 성공";
         }
 
-        LoginResponseDto responseDto = new LoginResponseDto(
-            200,
-            responseMessage,
-            new LoginResponseDto.TokenData(jwtToken)
-        );
+        // 🔥 CommonResponseVO 형태로 만들어서 JSON 변환
+        CommonResponseVO<Object> commonResponse = CommonResponseVO.builder()
+                .status(200)
+                .message("로그인 성공")
+                .data(Map.of("accessToken", jwtToken, "refreshToken", refreshToken))
+                .build();
 
         log.debug("callback end");
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(commonResponse);
     }
 }
