@@ -29,13 +29,13 @@ public class NotificationService {
 
 
     @Transactional
-    public void sendFollowNotification(Long receiverId, Long followerId, String followerName) {
+    public void sendFollowNotification(Long receiverId, Long followerId, String message) {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         Notification notification = new Notification(
                 "FOLLOW",
                 followerId,
-                followerName + "님이 당신을 팔로우했습니다!",
+                message,  // ✅ 메시지를 그대로 사용
                 now,
                 receiverId
         );

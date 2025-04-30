@@ -34,13 +34,20 @@ public class FollowService {
         follow.setStatus(status);
         followRepository.save(follow);
 
-        // ✅ 공개 여부 상관없이 알림 생성
+        // ✅ 닉네임 조회
         String nickname = memberRepository.findById(fromId.intValue())
                 .map(MemberEntity::getNickname)
                 .orElse("알 수 없음");
 
-        notificationService.sendFollowNotification(toId, fromId, nickname);
+        // ✅ 공개 여부에 따라 메시지 분기
+        String message = Boolean.TRUE.equals(status)
+                ? nickname + "님이 당신을 팔로우했습니다!"
+                : nickname + "님이 팔로우 요청을 보냈습니다.";
+
+        // ✅ 알림 전송
+        notificationService.sendFollowNotification(toId, fromId, message);
     }
+
 
 
     @Transactional

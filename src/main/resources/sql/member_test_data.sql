@@ -1,7 +1,7 @@
 -- member (회원)
 -- 비밀번호는 pw1,pw2,pw3,pw4
 INSERT INTO member
-(id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_music, birth, provider)
+(id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_music, birth, provider,is_public)
 VALUES
     (1,
      'user1',
@@ -14,7 +14,8 @@ VALUES
      'MEMBER',
      'https://rococo-cocada-2c23e0.netlify.app/audio/aespa - Supernova.mp3',
      '1997-10-10',
-     'LOCAL'),
+     'LOCAL',
+     1),
     (2,
      'user2',
      '$2a$12$lbY6ZRT88d6O8OnRfy1Phebqmm1tpxXzRHZX1OWSzNoeV4Xn6mD62',
@@ -27,7 +28,8 @@ VALUES
      'MEMBER',
      'https://rococo-cocada-2c23e0.netlify.app/audio/tws (투어스)-첫 만남은 계획대로 되지 않아.mp3',
      '2002-10-10',
-     'LOCAL'),
+     'LOCAL',
+     0),
     (3,
      'user3',
      '$2a$12$SJYlhyzE4ry200.3ela9dOzwK4uaL.bbzEXhevtzSEsq2MbDC9JP.',
@@ -40,7 +42,8 @@ VALUES
      'MEMBER',
      'https://rococo-cocada-2c23e0.netlify.app/audio/잔나비 (JANNABI) - 주저하는 연인들을 위해.mp3',
      '2000-10-10',
-     'LOCAL'),
+     'LOCAL',
+     1),
     (
         4,
         'user4',
@@ -54,7 +57,8 @@ VALUES
         'MEMBER',
         'https://rococo-cocada-2c23e0.netlify.app/audio/Freestyle - Y.mp3',
         '2002-10-10',
-        'LOCAL'
+        'LOCAL',
+     0
     );
 
 insert into member
@@ -72,25 +76,6 @@ values
         null,
         'LOCAL'
     );
-
-INSERT INTO member
-(id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_music, birth, provider,is_public)
-VALUES
-    (6,
-     'user5',
-     '$2a$12$8uTmz0e9sU9p5D9t8XQ1c.0U9zF3YxS.JnH8sP3Cz8eQ0aZhB1xqK',  -- 예시 암호화된 패스워드
-     '한결',
-     'hangyeol@example.com',
-     '럭키걸모카',
-     '음악을 사랑하는 사람입니다.',
-     '2025-04-04',
-     'ACTIVE',
-     'MEMBER',
-     'https://rococo-cocada-2c23e0.netlify.app/audio/아일릿 - Lucky Girl Syndrome.flac',
-     '1999-09-09',
-     'LOCAL',
-     1);
-
 
 
 INSERT INTO follow (following_member_id, follow_target_member_id, status) VALUES
