@@ -47,7 +47,7 @@ public class MemberEntity {
     private String profileImage;
 
     @Column(name = "status")
-    private String status;
+    private MemberStatus status;
 
     @Builder.Default
     @Column(name = "suspension_count", nullable = false)
@@ -71,5 +71,5 @@ public class MemberEntity {
     private Boolean isDeleted = false;
 
     @Column(name = "role")
-    private String role;
+    private Role role;
 }
