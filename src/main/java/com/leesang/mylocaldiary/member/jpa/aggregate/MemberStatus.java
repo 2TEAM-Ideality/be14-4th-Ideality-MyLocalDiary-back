@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.member.aggregate;
+package com.leesang.mylocaldiary.member.jpa.aggregate;
 
 public enum MemberStatus {
     SUSPENED,

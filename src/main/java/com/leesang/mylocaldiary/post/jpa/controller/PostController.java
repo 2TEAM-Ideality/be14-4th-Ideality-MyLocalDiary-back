@@ -1,7 +1,7 @@
 package com.leesang.mylocaldiary.post.jpa.controller;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
-import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
 import com.leesang.mylocaldiary.post.jpa.service.PostService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.leesang.mylocaldiary.security.details;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberStatus;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

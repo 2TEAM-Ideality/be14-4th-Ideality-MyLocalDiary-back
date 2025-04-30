@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.member.aggregate;
+package com.leesang.mylocaldiary.member.jpa.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,6 +47,7 @@ public class MemberEntity {
     private String profileImage;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
     @Builder.Default
@@ -57,7 +58,8 @@ public class MemberEntity {
     private String profileMusic;
 
     @Column(name = "provider")
-    private Provider provider;
+    @Enumerated(EnumType.STRING)
+    private MemberProvider provider;
 
     @Column(name = "provider_id")
     private String providerId;
@@ -71,5 +73,6 @@ public class MemberEntity {
     private Boolean isDeleted = false;
 
     @Column(name = "role")
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole;
 }
