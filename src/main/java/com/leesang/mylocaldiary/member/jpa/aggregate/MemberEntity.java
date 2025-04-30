@@ -1,4 +1,4 @@
-package com.leesang.mylocaldiary.member.aggregate;
+package com.leesang.mylocaldiary.member.jpa.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,22 +8,24 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class MemberEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id;  
 
     @Column(name = "login_id")
     private String loginId;
-
 
     @Column(name = "password", nullable = true)
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "birth")
     private String birth;
@@ -44,17 +46,23 @@ public class MemberEntity {
     private String profileImage;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MemberStatus status;
 
     @Builder.Default
     @Column(name = "suspension_count", nullable = false)
     private Integer suspensionCount = 0;
 
+    @Builder.Default
+    @Column(name = "report_count", nullable = false)
+    private Integer reportCount = 0;
+
     @Column(name = "profile_music")
     private String profileMusic;
 
     @Column(name = "provider")
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    private MemberProvider provider;
 
     @Column(name = "provider_id")
     private String providerId;
@@ -68,5 +76,22 @@ public class MemberEntity {
     private Boolean isDeleted = false;
 
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private MemberRole memberRole;
+
+    public void setReportCount(int newReportCount) {
+        this.reportCount = newReportCount;
+    }
+
+    public void setStatus(MemberStatus newStatus) {
+        this.status = newStatus;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public void setSuspensionCount(int newSuspensionCount) {
+        this.suspensionCount = newSuspensionCount;
+    }
 }

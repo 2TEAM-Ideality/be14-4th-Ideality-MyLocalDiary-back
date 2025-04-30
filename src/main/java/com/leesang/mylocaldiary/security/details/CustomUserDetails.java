@@ -1,5 +1,6 @@
 package com.leesang.mylocaldiary.security.details;
 
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberStatus;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
     private final String email;
     private final Collection<? extends GrantedAuthority> authorities; // 🔥 권한
     private final Boolean isDeleted;
-    private final String status;
+    private final MemberStatus status;
 
     public CustomUserDetails(Integer memberId,
                              String loginId,
@@ -24,7 +25,7 @@ public class CustomUserDetails implements UserDetails {
                              String email,
                              Collection<? extends GrantedAuthority> authorities,
                              Boolean isDeleted,
-                             String status) {
+                             MemberStatus status) {
         this.memberId = memberId;
         this.loginId = loginId;
         this.password = password;

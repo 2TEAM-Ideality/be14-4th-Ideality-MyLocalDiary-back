@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leesang.mylocaldiary.member.mybatis.Mapper.MemberMapper">
+    <resultMap id="MemberInfoMap" type="com.leesang.mylocaldiary.member.mybatis.dto.MemberInfoDTO">
+        <id property="memberId" column="id"/>
+        <result property="loginId" column="login_id"/>
+        <result property="email" column="email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="bio" column="bio"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="profileMusic" column="profile_music"/>
+        <result property="status" column="status"/>
+        <result property="role" column="role"/>
+        <result property="isPublic" column="is_public"/>
+    </resultMap>
+    <select id="selectMemberInfo"
+            resultMap="MemberInfoMap"
+            parameterType="_long">
+        SELECT
+               id
+             , login_id
+             , email
+             , nickname
+             , bio
+             , profile_image
+             , profile_music
+             , status
+             , role
+             , is_public
+          FROM member
+         WHERE id = ${memberId}
+    </select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leesang.mylocaldiary.admin.mapper.ReportMapper">
+
+    <resultMap id="reportResultMap" type="com.leesang.mylocaldiary.admin.dto.ReportDTO">
+        <id property="id" column="ID"/>
+        <result property="createdAt" column="CREATED_AT" />
+        <result property="reportType" column="REPORT_TYPE"/>
+        <result property="reportedId" column="REPORTED_ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="status" column="STATUS"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="reportReasonId" column="REPORT_REASON_ID"/>
+    </resultMap>
+
+    <!-- 신고 내역 전체 조회 -->
+    <select id="selectReportList" resultMap="reportResultMap">
+        SELECT
+        R.ID,
+        R.CREATED_AT,
+        R.REPORT_TYPE,
+        R.REPORTED_ID,
+        R.CONTENT,
+        R.STATUS,
+        R.MEMBER_ID,
+        R.REPORT_REASON_ID
+        FROM
+        REPORT R
+        JOIN MEMBER M ON R.MEMBER_ID = M.ID
+        JOIN REPORT_REASON RR ON R.REPORT_REASON_ID = RR.ID
+        ORDER BY R.CREATED_AT DESC
+    </select>
+
+    <!--  처리중 인 신고 내역 조회  -->
+    <select id="selectWaitingReportList" resultMap="reportResultMap">
+        SELECT
+            R.ID,
+            R.CREATED_AT,
+            R.REPORT_TYPE,
+            R.REPORTED_ID,
+            R.CONTENT,
+            R.STATUS,
+            R.MEMBER_ID,
+            R.REPORT_REASON_ID
+        FROM
+        REPORT R
+            JOIN MEMBER M ON R.MEMBER_ID = M.ID
+            JOIN REPORT_REASON RR ON R.REPORT_REASON_ID = RR.ID
+        WHERE
+            R.STATUS = 'WAITING'
+        ORDER BY R.CREATED_AT DESC
+    </select>
+
+
+</mapper>

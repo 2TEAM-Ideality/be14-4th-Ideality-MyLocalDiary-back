@@ -1,6 +1,6 @@
 package com.leesang.mylocaldiary.post.jpa.entity;
 
-import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
+import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

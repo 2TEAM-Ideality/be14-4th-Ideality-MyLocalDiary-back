@@ -5,9 +5,10 @@ import java.util.List;
 
 @Data
 public class PostDetailResponse {
-    private Long postId;
-    private String title;
+    private Long postId;    //
+    private String title;   //
     private String post;
+    private String diary;
     private String createdAt;
     private Integer memberId;
     private String nickname;

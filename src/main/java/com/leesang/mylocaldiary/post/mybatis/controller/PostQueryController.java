@@ -1,6 +1,9 @@
 package com.leesang.mylocaldiary.post.mybatis.controller;
 
+import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.MyPostDetailResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.PostDateResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse;
 import com.leesang.mylocaldiary.post.mybatis.service.PostQueryService;
@@ -23,9 +26,21 @@ public class PostQueryController {
         return ResponseEntity.ok(postQueryService.findMyPostsForMap(memberId));
     }
 
+    // 1-1. 내가 쓴 게시글 전제 조회 (마이페이지/캘린더)
+    @GetMapping("/calendar")
+    public ResponseEntity<CommonResponseVO<List<PostDateResponse>>> findMyPostsForCalendar(@RequestParam Integer memberId) {
+        List<PostDateResponse> data=postQueryService.findMyPostsForCalendar(memberId);
+        CommonResponseVO<List<PostDateResponse>> response=CommonResponseVO.<List<PostDateResponse>>builder()
+                .status(200)
+                .message("조회 성공")
+                .data(data)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     // 2. 내가 쓴 게시글 상세 조회
     @GetMapping("/my/{postId}")
-    public ResponseEntity<PostDetailResponse> findMyPostDetail(@PathVariable Integer postId, @RequestParam Integer memberId) {
+    public ResponseEntity<MyPostDetailResponse> findMyPostDetail(@PathVariable Integer postId, @RequestParam Integer memberId) {
         return ResponseEntity.ok(postQueryService.findMyPostDetail(postId, memberId));
     }
 
