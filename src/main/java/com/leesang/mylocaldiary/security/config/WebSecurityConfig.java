@@ -62,6 +62,7 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/member/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // follow 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/notifications/**")).permitAll() // notifications 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).permitAll() // admin 허용

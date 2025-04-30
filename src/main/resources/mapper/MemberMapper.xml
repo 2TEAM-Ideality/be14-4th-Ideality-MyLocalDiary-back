@@ -14,6 +14,17 @@
         <result property="role" column="role"/>
         <result property="isPublic" column="is_public"/>
     </resultMap>
+
+    <resultMap id="OtherMemberInfoMap" type="com.leesang.mylocaldiary.member.mybatis.dto.OtherMemberInfoDTO">
+        <id property="id" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="bio" column="bio"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="profileMusic" column="profile_music"/>
+        <result property="isPublic" column="is_public"/>
+    </resultMap>
+
+
     <select id="selectMemberInfo"
             resultMap="MemberInfoMap"
             parameterType="_long">
@@ -29,6 +40,21 @@
              , role
              , is_public
           FROM member
-         WHERE id = ${memberId}
+         WHERE id = #{memberId}
+    </select>
+
+    <!--  다른 유저 정보 가져오기  -->
+    <select id="selectOtherMemberInfo"
+            resultMap="OtherMemberInfoMap"
+            parameterType="_long">
+        SELECT
+            id,
+            nickname,
+            bio,
+            profile_image,
+            profile_music,
+            is_public
+        FROM member
+        WHERE id = #{memberId}
     </select>
 </mapper>
