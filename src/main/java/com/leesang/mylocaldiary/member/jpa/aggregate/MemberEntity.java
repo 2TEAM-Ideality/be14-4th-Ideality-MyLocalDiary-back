@@ -13,11 +13,10 @@ public class MemberEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id;  
 
     @Column(name = "login_id")
     private String loginId;
-
 
     @Column(name = "password", nullable = true)
     private String password;
@@ -54,6 +53,10 @@ public class MemberEntity {
     @Column(name = "suspension_count", nullable = false)
     private Integer suspensionCount = 0;
 
+    @Builder.Default
+    @Column(name = "report_count", nullable = false)
+    private Integer reportCount = 0;
+
     @Column(name = "profile_music")
     private String profileMusic;
 
@@ -75,4 +78,20 @@ public class MemberEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
+
+    public void setReportCount(int newReportCount) {
+        this.reportCount = newReportCount;
+    }
+
+    public void setStatus(MemberStatus newStatus) {
+        this.status = newStatus;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public void setSuspensionCount(int newSuspensionCount) {
+        this.suspensionCount = newSuspensionCount;
+    }
 }

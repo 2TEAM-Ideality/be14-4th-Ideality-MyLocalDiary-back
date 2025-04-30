@@ -64,6 +64,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/follow/**")).permitAll() // follow 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/notifications/**")).permitAll() // notifications 허용
+                        .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).permitAll() // admin 허용
                         .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll() // kakao 로그인 허용
                         .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll() // kakao callback 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()

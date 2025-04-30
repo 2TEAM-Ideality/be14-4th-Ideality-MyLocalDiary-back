@@ -28,6 +28,33 @@
         </collection>
     </resultMap>
 
+    <resultMap id="MyPostDetailResponseMap" type="com.leesang.mylocaldiary.post.mybatis.dto.MyPostDetailResponse">
+        <id property="postId" column="post_id"/>
+        <result property="title" column="title"/>
+        <result property="post" column="post_content"/>
+        <result property="diary" column="diary_content"/>
+
+        <result property="createdAt" column="created_at"/>
+        <result property="memberId" column="member_id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="profileImage" column="profile_image"/>
+
+        <collection property="photos" ofType="com.leesang.mylocaldiary.post.mybatis.dto.PhotoInfo">
+            <id property="id" column="photo_id"/>
+            <result property="imageUrl" column="image_url"/>
+            <result property="orders" column="photo_orders"/>
+        </collection>
+
+        <collection property="places" ofType="com.leesang.mylocaldiary.post.mybatis.dto.PlaceInfo">
+            <id property="id" column="place_id"/>
+            <result property="name" column="place_name"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+            <result property="thumbnailImage" column="thumbnail_image"/>
+            <result property="orders" column="place_orders"/>
+        </collection>
+    </resultMap>
+
     <select id="findMyPostsForMap" resultType="com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse">
         SELECT
             p.id AS postId,
@@ -49,11 +76,12 @@
          WHERE member_id = #{memberId}
     </select>
 
-    <select id="findMyPostDetail" resultMap="PostDetailResponseMap">
+    <select id="findMyPostDetail" resultMap="MyPostDetailResponseMap">
         SELECT
             p.id AS post_id,
             p.title,
             p.post AS post_content,
+            p.diary AS diary_content,
             p.created_at,
             m.id AS member_id,
             m.nickname,

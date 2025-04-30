@@ -2,6 +2,7 @@ package com.leesang.mylocaldiary.post.mybatis.controller;
 
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.MyPostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDateResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse;
@@ -39,7 +40,7 @@ public class PostQueryController {
 
     // 2. 내가 쓴 게시글 상세 조회
     @GetMapping("/my/{postId}")
-    public ResponseEntity<PostDetailResponse> findMyPostDetail(@PathVariable Integer postId, @RequestParam Integer memberId) {
+    public ResponseEntity<MyPostDetailResponse> findMyPostDetail(@PathVariable Integer postId, @RequestParam Integer memberId) {
         return ResponseEntity.ok(postQueryService.findMyPostDetail(postId, memberId));
     }
 

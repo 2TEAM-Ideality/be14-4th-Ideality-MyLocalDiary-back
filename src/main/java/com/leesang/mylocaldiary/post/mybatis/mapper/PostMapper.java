@@ -1,6 +1,7 @@
 package com.leesang.mylocaldiary.post.mybatis.mapper;
 
 import com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.MyPostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDateResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse;
@@ -16,7 +17,7 @@ public interface PostMapper {
 
     List<PostDateResponse> findMyPostsForCalendar(Integer memberId);
 
-    PostDetailResponse findMyPostDetail(@Param("postId") Integer postId, @Param("memberId") Integer memberId);
+    MyPostDetailResponse findMyPostDetail(@Param("postId") Integer postId, @Param("memberId") Integer memberId);
 
     List<PostSimpleResponse> findFollowedPostsForMap(@Param("memberId") Integer memberId);
 
