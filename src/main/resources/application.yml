@@ -36,7 +36,8 @@ mybatis:
 
 token:
   secret: ${secret_key}
-  expiration_time: 43200000
+  access_expiration_time: 36000000      # Access Token: 15분 (900,000ms)
+  refresh_expiration_time: 604800000  # Refresh Token: 7일 (604,800,000ms)
 
 cloud:
   aws:

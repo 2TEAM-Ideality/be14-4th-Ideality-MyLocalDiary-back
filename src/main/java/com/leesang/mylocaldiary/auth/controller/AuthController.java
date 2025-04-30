@@ -5,6 +5,7 @@ import com.leesang.mylocaldiary.auth.dto.RequestSignUpDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestVerifyEmailDTO;
 import com.leesang.mylocaldiary.auth.service.AuthService;
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

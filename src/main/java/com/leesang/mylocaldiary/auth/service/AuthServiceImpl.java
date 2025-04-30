@@ -4,17 +4,26 @@ import com.leesang.mylocaldiary.auth.dto.RequestEmailDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestSignUpDTO;
 import com.leesang.mylocaldiary.auth.dto.RequestVerifyEmailDTO;
 import com.leesang.mylocaldiary.common.exception.GlobalException;
+import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.email.service.EmailAuthService;
 import com.leesang.mylocaldiary.email.service.EmailSendService;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
+import com.leesang.mylocaldiary.redis.config.RedisConfig;
+import com.leesang.mylocaldiary.security.jwt.JwtProvider;
+import com.leesang.mylocaldiary.security.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -30,7 +39,10 @@ public class AuthServiceImpl implements AuthService {
     public AuthServiceImpl(EmailAuthService emailAuthService,
                            EmailSendService emailSendService,
                            MemberRepository memberRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           JwtUtil jwtUtil,
+                           JwtProvider jwtProvider,
+                           RedisTemplate redisTemplate) {
         this.emailAuthService = emailAuthService;
         this.emailSendService = emailSendService;
         this.memberRepository = memberRepository;

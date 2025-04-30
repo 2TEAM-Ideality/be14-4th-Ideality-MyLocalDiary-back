@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,15 +20,23 @@ import com.leesang.mylocaldiary.security.details.CustomUserDetails;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JwtProvider jwtProvider;
+    private final RedisTemplate redisTemplate;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+    public CustomAuthenticationFilter(JwtProvider jwtProvider, RedisTemplate redisTemplate) {
+        this.jwtProvider = jwtProvider;
+        this.redisTemplate = redisTemplate;
+    }
+
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider, RedisTemplate redisTemplate) {
         super(authenticationManager);
         this.jwtProvider = jwtProvider;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -69,6 +78,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String role = userDetails.getAuthorities().iterator().next().getAuthority(); // 첫 번째 권한
 
         String accessToken = jwtProvider.generateAccessToken(memberId, email, role);
+        String refreshToken = jwtProvider.generateRefreshToken(memberId);
+
+        // Redis 저장
+        String redisKey = "Refresh-Token:" + memberId;
+        redisTemplate.opsForValue().set(redisKey, refreshToken, 7, TimeUnit.DAYS);
 
         // 🔥 Content-Type을 JSON으로 설정
         response.setContentType("application/json");
@@ -78,7 +92,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         CommonResponseVO<Object> commonResponse = CommonResponseVO.builder()
                 .status(200)
                 .message("로그인 성공")
-                .data(Map.of("accessToken", accessToken))
+                .data(Map.of("accessToken", accessToken, "refreshToken", refreshToken))
                 .build();
 
         String jsonResponse = new ObjectMapper().writeValueAsString(commonResponse);
@@ -87,6 +101,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         log.info("AccessToken 발급 완료, JSON Body로 반환 (CommonResponseVO 형태)");
         log.info("AccessToken 발급 완료: {}", accessToken);
+        log.info("RefreshToken 발급 완료: {}", refreshToken);
     }
 
     @Override
@@ -111,4 +126,3 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.getWriter().write(jsonResponse);
     }
 }
-
