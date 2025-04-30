@@ -1,6 +1,7 @@
 package com.leesang.mylocaldiary.post.mybatis.service;
 
 import com.leesang.mylocaldiary.post.mybatis.dto.CommentResponse;
+import com.leesang.mylocaldiary.post.mybatis.dto.MyPostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDateResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostDetailResponse;
 import com.leesang.mylocaldiary.post.mybatis.dto.PostSimpleResponse;
@@ -27,7 +28,7 @@ public class PostQueryService {
     }
 
     // 2. 내가 쓴 게시글 상세 조회
-    public PostDetailResponse findMyPostDetail(Integer postId, Integer memberId) {
+    public MyPostDetailResponse findMyPostDetail(Integer postId, Integer memberId) {
         return postMapper.findMyPostDetail(postId, memberId);
     }
 
