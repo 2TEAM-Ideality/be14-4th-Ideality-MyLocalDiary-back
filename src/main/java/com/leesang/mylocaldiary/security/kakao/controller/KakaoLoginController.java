@@ -2,6 +2,7 @@ package com.leesang.mylocaldiary.security.kakao.controller;
 
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.aggregate.Provider;
 import com.leesang.mylocaldiary.member.aggregate.Role;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
@@ -50,7 +51,7 @@ public class KakaoLoginController {
                     .birth("1900-01-01")   // 카카오에서 받아올 수 없어서 임의의 정보 입력
                     .nickname(userInfo.getKakaoAccount().getProfile().getNickName())
                     .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                    .provider("kakao")
+                    .provider(Provider.KAKAO)
                     .providerId(providerId)
                     .status(MemberStatus.ACTIVE)
                     .role(Role.MEMBER)

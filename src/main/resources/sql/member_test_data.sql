@@ -1,7 +1,7 @@
 -- member (회원)
 -- 비밀번호는 pw1,pw2,pw3,pw4
 INSERT INTO member
-(id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_music, birth)
+(id, login_id, password, name, email, nickname, bio, created_at, status, role, profile_music, birth, provider)
 VALUES
     (1,
      'user1',
@@ -12,8 +12,9 @@ VALUES
      '2025-04-01',
      'ACTIVE',
      'MEMBER',
-     'https://rococo-cocada-2c23e0.netlify.app/audio/aespa - Supernova.mp3'
-    , '1997-10-10'),
+     'https://rococo-cocada-2c23e0.netlify.app/audio/aespa - Supernova.mp3',
+     '1997-10-10',
+     'LOCAL'),
     (2,
      'user2',
      '$2a$12$lbY6ZRT88d6O8OnRfy1Phebqmm1tpxXzRHZX1OWSzNoeV4Xn6mD62',
@@ -25,7 +26,8 @@ VALUES
      'ACTIVE',
      'MEMBER',
      'https://rococo-cocada-2c23e0.netlify.app/audio/tws (투어스)-첫 만남은 계획대로 되지 않아.mp3',
-     '2002-10-10'),
+     '2002-10-10',
+     'LOCAL'),
     (3,
      'user3',
      '$2a$12$SJYlhyzE4ry200.3ela9dOzwK4uaL.bbzEXhevtzSEsq2MbDC9JP.',
@@ -37,7 +39,8 @@ VALUES
      'ACTIVE',
      'MEMBER',
      'https://rococo-cocada-2c23e0.netlify.app/audio/잔나비 (JANNABI) - 주저하는 연인들을 위해.mp3',
-     '2000-10-10'),
+     '2000-10-10',
+     'LOCAL'),
     (
         4,
         'user4',
@@ -50,11 +53,12 @@ VALUES
         'ACTIVE',
         'MEMBER',
         'https://rococo-cocada-2c23e0.netlify.app/audio/Freestyle - Y.mp3',
-        '2002-10-10'
+        '2002-10-10',
+        'LOCAL'
     );
 
 insert into member
-(login_id, password, name, email, nickname, created_at, status, role, profile_image)
+(login_id, password, name, email, nickname, created_at, status, role, profile_image, provider)
 values
     (
         "admin01",
@@ -65,5 +69,6 @@ values
         "2000-03-09",
         "ACTIVE",
         "ADMIN",
-        null
+        null,
+        'LOCAL'
     );

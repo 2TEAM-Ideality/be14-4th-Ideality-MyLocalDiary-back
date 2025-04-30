@@ -57,7 +57,7 @@ public class MemberEntity {
     private String profileMusic;
 
     @Column(name = "provider")
-    private String provider;
+    private Provider provider;
 
     @Column(name = "provider_id")
     private String providerId;

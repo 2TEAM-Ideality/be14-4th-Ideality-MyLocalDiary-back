@@ -9,6 +9,7 @@ import com.leesang.mylocaldiary.email.service.EmailAuthService;
 import com.leesang.mylocaldiary.email.service.EmailSendService;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.aggregate.MemberStatus;
+import com.leesang.mylocaldiary.member.aggregate.Provider;
 import com.leesang.mylocaldiary.member.aggregate.Role;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
@@ -94,6 +95,7 @@ public class AuthServiceImpl implements AuthService {
                 .isPublic(requestSignUpDTO.getIsPublic())
                 .createdAt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .status(MemberStatus.ACTIVE)
+                .provider(Provider.LOCAL)
                 .role(Role.MEMBER)
                 .build();
 
