@@ -17,6 +17,5 @@ public class OtherMemberInfoDTO {
 	private String bio;
 	private String profileImage;
 	private String profileMusic;
-	private Boolean isPublic;
-
+	private Integer isPublic;
 }

@@ -7,5 +7,5 @@ public interface MemberQueryService {
     MemberInfoDTO findMemberInfo(Long memberId);
 
 	// 테스트
-	OtherMemberInfoDTO findOtherMemberInfo(Long otherMemberId);
+	OtherMemberInfoDTO findOtherMemberInfo(Long loginMemberId, Long targetMemberId);
 }

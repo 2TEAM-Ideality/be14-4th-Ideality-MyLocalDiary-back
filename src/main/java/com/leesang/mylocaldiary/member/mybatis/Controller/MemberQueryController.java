@@ -6,6 +6,8 @@ import com.leesang.mylocaldiary.member.mybatis.dto.MemberInfoDTO;
 import com.leesang.mylocaldiary.member.mybatis.dto.OtherMemberInfoDTO;
 import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/member")
 public class MemberQueryController {
@@ -39,12 +42,14 @@ public class MemberQueryController {
     }
 
     // 다른 유저 정보 가져오기
-    @GetMapping("/{id}")
-    public ResponseEntity<CommonResponseVO<?>> otherMemberInfo(HttpServletRequest request, @PathVariable Long id) {
+    @GetMapping("/{targetMemberId}")
+    public ResponseEntity<CommonResponseVO<?>> otherMemberInfo(HttpServletRequest request, @PathVariable Long targetMemberId) {
         String token = jwtUtil.extractAccessToken(request);
-        Long memberId = jwtUtil.getUserIdFromToken(token);
-        OtherMemberInfoDTO data = memberQueryService.findOtherMemberInfo(id);
+        Long loginMemberId = jwtUtil.getUserIdFromToken(token);
 
+        OtherMemberInfoDTO data = memberQueryService.findOtherMemberInfo(loginMemberId, targetMemberId);
+
+        log.info(String.valueOf(data));
         return ResponseEntity.ok(CommonResponseVO.builder()
             .status(200)
             .message("")

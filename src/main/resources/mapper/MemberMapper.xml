@@ -24,7 +24,7 @@
         <result property="isPublic" column="is_public"/>
     </resultMap>
 
-
+    <!-- 로그인한 유저 정보 가져오기 -->
     <select id="selectMemberInfo"
             resultMap="MemberInfoMap"
             parameterType="_long">
@@ -43,18 +43,30 @@
          WHERE id = #{memberId}
     </select>
 
-    <!--  다른 유저 정보 가져오기  -->
+    <!--  팔로잉 or 공개 계정 유저 정보 가져오기  -->
     <select id="selectOtherMemberInfo"
             resultMap="OtherMemberInfoMap"
-            parameterType="_long">
+            parameterType="map">
         SELECT
-            id,
-            nickname,
-            bio,
-            profile_image,
-            profile_music,
-            is_public
-        FROM member
-        WHERE id = #{memberId}
+            m.id,
+            m.nickname,
+            m.bio,
+            m.profile_image,
+            m.profile_music,
+            m.is_public
+        FROM member m
+        WHERE m.id = #{targetMemberId}
+          AND m.role != 'ADMIN'
+      AND (
+            m.is_public = 1
+            OR EXISTS (
+                SELECT 1 FROM follow f
+                WHERE f.following_member_id = #{loginMemberId}
+          AND f.follow_target_member_id = #{targetMemberId}
+            )
+            )
     </select>
+
+
+
 </mapper>
