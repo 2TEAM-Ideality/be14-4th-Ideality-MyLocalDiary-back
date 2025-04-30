@@ -18,7 +18,10 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
     ALREADY_SUSPENDED(HttpStatus.CONFLICT, "이미 정지된 회원입니다."),
     SUSPENSION_NOT_FOUND(HttpStatus.NOT_FOUND, "정지 기록이 존재하지 않습니다."),
-    REPORT_REASON_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 정지 사유가 존재하지 않습니다." );
+    REPORT_REASON_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 정지 사유가 존재하지 않습니다." ),
+
+    // POST
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 게시글이 존재하지 않습니다." );
 
     private final HttpStatus status;
     private final String message;

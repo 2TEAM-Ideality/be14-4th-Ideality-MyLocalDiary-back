@@ -9,13 +9,13 @@ insert into member
 (login_id, password, name, email, nickname, created_at, status, role, profile_image)
 values
     (
-        "admin01",
-        "$2a$12$reDJjzovF8o.IYnFdcbtNuEoS0GKrS6.23yWYUB3stQ5wB2YftHcG",
-        "관리자",
-        "admin01@test.com",
-        "ADMIN",
-        "2000-03-09",
-        "ACTIVE",
-        "ADMIN",
+        'admin01',
+        '$2a$12$reDJjzovF8o.IYnFdcbtNuEoS0GKrS6.23yWYUB3stQ5wB2YftHcG',
+        '관리자',
+        'admin01@test.com',
+        'ADMIN',
+        '2000-03-09',
+        'ACTIVE',
+        'ADMIN',
         null
     );

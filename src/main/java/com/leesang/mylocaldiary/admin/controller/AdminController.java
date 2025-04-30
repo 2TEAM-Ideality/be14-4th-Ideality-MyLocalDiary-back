@@ -88,12 +88,11 @@ public class AdminController {
 		return ResponseEntity.ok(res);
 	}
 
-	// 신고 처리 (처리 완료)
-	@PatchMapping("/report/resolve")
-	public ResponseEntity<CommonResponseVO<?>> resolveReport(@RequestBody RequestHandleReportDTO request) {
-		log.info("신고 처리 요청: 신고 ID={}", request.getMemberId());
-		adminCommandService.handleReport(request, "resolve");
-
+	// 신고 처리 (처리 완료 -> 정지)
+	@PatchMapping("/report/{reportId}/resolve")
+	public ResponseEntity<CommonResponseVO<?>> resolveReport(@PathVariable int reportId) {
+		log.info("신고 처리 요청: 신고 ID={}", reportId);
+		adminCommandService.resolveReport(reportId);
 		CommonResponseVO<Object> res = CommonResponseVO.builder()
 			.status(200)
 			.message("신고 내역 확인 후 정지 처리 완료")
@@ -102,11 +101,11 @@ public class AdminController {
 		return ResponseEntity.ok(res);
 	}
 
-	// 신고 처리 반려
-	@PatchMapping("/report/reject")
-	public ResponseEntity<CommonResponseVO<?>> rejectReport(@RequestBody RequestHandleReportDTO request) {
-		log.info("신고 처리 요청: 신고 ID={}", request.getMemberId());
-		adminCommandService.handleReport(request, "reject");
+	// 신고 처리 (반려)
+	@PatchMapping("/report/{reportId}/reject")
+	public ResponseEntity<CommonResponseVO<?>> rejectReport(@PathVariable int reportId) {
+		log.info("신고 처리 요청: 신고 ID={}", reportId);
+		adminCommandService.rejectReport(reportId);
 		
 		CommonResponseVO<Object> res = CommonResponseVO.builder()
 			.status(200)

@@ -1,8 +1,7 @@
 package com.leesang.mylocaldiary.security.config;
 
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationFilter;
-import com.leesang.mylocaldiary.security.filter.CustomAuthenticationProvider;
-import com.leesang.mylocaldiary.security.filter.JwtFilter;
+import com.leesang.mylocaldiary.security.jwt.JwtFilter;
 import com.leesang.mylocaldiary.security.handler.JwtAuthenticationEntryPoint;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.jwt.JwtUtil;
@@ -14,8 +13,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;

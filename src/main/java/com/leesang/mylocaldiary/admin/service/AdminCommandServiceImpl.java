@@ -20,10 +20,13 @@ import com.leesang.mylocaldiary.admin.dto.RequestReportDTO;
 import com.leesang.mylocaldiary.admin.repository.ReportReasonRepository;
 import com.leesang.mylocaldiary.admin.repository.ReportRepository;
 import com.leesang.mylocaldiary.admin.repository.SuspensionRepository;
+import com.leesang.mylocaldiary.comment.aggregate.CommentEntity;
 import com.leesang.mylocaldiary.common.exception.ErrorCode;
 import com.leesang.mylocaldiary.common.exception.GlobalException;
 import com.leesang.mylocaldiary.member.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.repository.MemberRepository;
+import com.leesang.mylocaldiary.post.jpa.entity.Post;
+import com.leesang.mylocaldiary.post.jpa.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,33 +37,50 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminCommandServiceImpl implements AdminCommandService {
 
 	private final MemberRepository memberRepository;
+	private final PostRepository postRepository;
 
 	private final ReportRepository reportRepository;
 	private final ReportReasonRepository reportReasonRepository;
 
 	private final SuspensionRepository suspensionRepository;
 
-	// 신고 상태 처리 (처리 완료, 보류)
+	// 신고 처리 완료 -> 정지
 	@Override
 	@Transactional
-	public void handleReport(RequestHandleReportDTO request, String handleType) {
+	public void resolveReport(int reportId) {
 		// 처리 상태 변경할 신고 내역 : request
-		ReportEntity targetReport = reportRepository.findById(request.getId())
+		ReportEntity targetReport = reportRepository.findById(reportId)
 			.orElseThrow(() -> new GlobalException(ErrorCode.REPORT_NOT_FOUND));
 
-		if(handleType.equals("reject")){
-			// 반려 처리
-			targetReport.setStatus(ReportStatus.REJECTED);
-			reportRepository.save(targetReport);
-			return ;
-		}
 		// 처리 완료
 		targetReport.setStatus(ReportStatus.RESOLVED);
 		reportRepository.save(targetReport);
 
+		// 신고 대상 회원 찾기
+		String targetReportType = String.valueOf(targetReport.getReportedId());
+
+		ReportType reportType = targetReport.getReportType();  // ← 올바른 타입 가져오기
+		log.info("📌 ReportType = {}", reportType);
+
+		MemberEntity targetMember = null;
+
+		if (reportType == ReportType.MEMBER) {
+			targetMember = memberRepository.findById(targetReport.getReportedId())
+				.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
+
+		} else if (reportType == ReportType.POST) {
+			Post targetPost = postRepository.findById((long)targetReport.getReportedId())
+				.orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
+			targetMember = targetPost.getMember();
+
+		} else if (reportType == ReportType.COMMENT) {
+			log.info("댓글 신고");
+			// TODO: 댓글 엔티티 구현 시 적용
+		}
+
 		// 1. 신고 대상 회원 가져오기
-		MemberEntity targetMember = memberRepository.findById(request.getMemberId())
-			.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
+		// MemberEntity targetMember = memberRepository.findById(request.getMemberId())
+		// 	.orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
 
 		// 2. 신고 횟수 증가
 		targetMember.setReportCount(targetMember.getReportCount() + 1);
@@ -82,22 +102,21 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 			targetMember.setIsDeleted(true);
 			targetMember.setSuspensionCount(targetMember.getSuspensionCount() + 1);
 		}
+		log.info("🚨 신고 처리 완료: reportId={}, type={}, targetId={}", reportId, targetReportType, targetMember.getId());
 		memberRepository.save(targetMember);
-		/*
-		신고 들어옴 -> 신고 처리 (수동) -> 처리 완료 시
-		1. 일단 신고 횟수 증가  member.report_count -> ++
-		2. 신고 횟수가
-			cnt == 1 -> 3일 정지
-			cnt == 2 -> 30일 정지
-			이미 정지 상태라면 ?
-			정지 기간을 늘리기
-			member.status -> SUSPENDED  정지로 바꾸기
-			member.suspension_count -> ++  정지 횟수 올리기
 
-			cnt == 3 -> -> 영구 탈퇴
-			member.suspension_count -> ++  정지 횟수 올리기
-			member.status -> DELETED
-	 */
+	}
+
+	// 신고 반려
+	@Override
+	public void rejectReport(int reportId) {
+		// 처리 상태 변경할 신고 내역 : request
+		ReportEntity targetReport = reportRepository.findById(reportId)
+			.orElseThrow(() -> new GlobalException(ErrorCode.REPORT_NOT_FOUND));
+
+		targetReport.setStatus(ReportStatus.REJECTED);
+		reportRepository.save(targetReport);
+		log.info("🚫 신고 반려 완료: reportId={}", reportId);
 	}
 
 
@@ -195,6 +214,8 @@ public class AdminCommandServiceImpl implements AdminCommandService {
 		reportRepository.save(newReport);
 
 	}
+
+
 
 }
 

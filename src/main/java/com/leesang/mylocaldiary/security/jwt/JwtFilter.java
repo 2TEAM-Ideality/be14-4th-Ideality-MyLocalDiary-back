@@ -1,6 +1,5 @@
-package com.leesang.mylocaldiary.security.filter;
+package com.leesang.mylocaldiary.security.jwt;
 
-import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
