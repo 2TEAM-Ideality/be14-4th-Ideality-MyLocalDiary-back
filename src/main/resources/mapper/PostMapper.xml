@@ -35,6 +35,7 @@
         <result property="diary" column="diary_content"/>
 
         <result property="createdAt" column="created_at"/>
+        <result property="postLikeCount" column="likes_count"/>
         <result property="memberId" column="member_id"/>
         <result property="nickname" column="nickname"/>
         <result property="profileImage" column="profile_image"/>
@@ -83,6 +84,7 @@
             p.post AS post_content,
             p.diary AS diary_content,
             p.created_at,
+            p.likes_count,
             m.id AS member_id,
             m.nickname,
             m.profile_image,

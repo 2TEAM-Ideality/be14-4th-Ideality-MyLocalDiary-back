@@ -13,6 +13,7 @@ public class MyPostDetailResponse {
     private Integer memberId;
     private String nickname;
     private String profileImage;
+    private Integer postLikeCount;
     private List<PhotoInfo> photos;
     private List<PlaceInfo> places;
 }
