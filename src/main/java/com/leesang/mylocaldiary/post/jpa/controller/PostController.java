@@ -23,12 +23,13 @@ public class PostController {
     public ResponseEntity<?> createPost(
             @RequestPart PostCreateRequest request,
             @RequestPart List<MultipartFile> images,
+            @RequestPart List<MultipartFile> thumbnails,
             @RequestParam("memberId") Integer memberId
     ) {
         MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        postService.createPost(request, images, member);
+        postService.createPost(request, images, thumbnails, member);
         return ResponseEntity.ok().build();
     }
 
