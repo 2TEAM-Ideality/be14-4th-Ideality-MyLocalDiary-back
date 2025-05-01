@@ -1,8 +1,11 @@
 package com.leesang.mylocaldiary.security.jwt;
 
+import com.leesang.mylocaldiary.common.exception.ErrorCode;
+import com.leesang.mylocaldiary.common.exception.GlobalException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +52,9 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            return e.getClaims(); // 🔥 만료되었어도 Claims 꺼내기
+            return e.getClaims();  // 만료되었지만 claims는 사용 가능
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new GlobalException(ErrorCode.INVALID_TOKEN); // 🔥 다른 JWT 오류도 포괄적으로 처리
         }
     }
 
@@ -63,23 +68,21 @@ public class JwtUtil {
     }
 
     // Refresh Token 추출
-    public String extractRefreshToken(HttpServletRequest request) {
-        return request.getHeader("Refresh-Token");
+    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {  // ✅ 이름 일치
+                    log.info(cookie.getValue());
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     // MemberId(subject) 추출
     public Long getUserIdFromToken(String token) {
         return Long.valueOf(getClaimsAllowExpired(token).getSubject());
-    }
-
-    // Email Claim 추출
-    public String getEmailFromToken(String token) {
-        return getClaimsAllowExpired(token).get("email", String.class);
-    }
-
-    // Role Claim 추출
-    public String getRoleFromToken(String token) {
-        return getClaimsAllowExpired(token).get("role", String.class);
     }
 
     public long getExpiration(String accessToken) {
