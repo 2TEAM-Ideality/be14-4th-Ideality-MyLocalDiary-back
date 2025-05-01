@@ -46,3 +46,22 @@ INSERT INTO follow (id, following_member_id, follow_target_member_id, status)
 VALUES
     (1, 1, 2, TRUE),
     (2, 1, 3, TRUE);
+
+-- stamp
+INSERT INTO stamp (id, name, description)
+VALUES
+    (1, '카페냥', '카페다냥'),
+    (2, '산책냥', '산책이다냥'),
+    (3, '꽐라냥', '취했다냥'),
+    (4, '독서냥', '독서다냥'),
+    (5, '맛집냥', '맛집이다냥'),
+    (6, '영화냥', '영화다냥');
+
+-- member_stamp
+INSERT INTO member_stamp (id, achieved_date, member_id, stamp_id)
+VALUES
+    (1, '2025-04-11', 1, 1),
+    (2, '2025-04-12', 1, 1),
+    (3, '2025-04-13', 1, 2),
+    (4, '2025-04-14', 1, 4),
+    (5, '2025-04-15', 1, 6);
