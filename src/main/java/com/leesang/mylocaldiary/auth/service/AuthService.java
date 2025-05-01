@@ -10,4 +10,8 @@ public interface AuthService {
     void verificationCode(RequestVerifyEmailDTO verifyDTO);
 
     int signUpMember(RequestSignUpDTO requestSignUpDTO);
+
+    boolean isLoginIdAvaliable(String loginId);
+
+    boolean isNicknameAvaliable(String nickname);
 }
