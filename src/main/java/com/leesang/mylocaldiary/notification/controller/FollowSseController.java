@@ -1,5 +1,7 @@
 package com.leesang.mylocaldiary.notification.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leesang.mylocaldiary.notification.entity.Notification;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ public class FollowSseController {
 
     private final Map<Long, List<SseEmitter>> emitters = new ConcurrentHashMap<>();
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 직렬화용
 
     public FollowSseController(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
@@ -44,14 +47,15 @@ public class FollowSseController {
         return emitter;
     }
 
-    public void sendFollowNotification(Long targetUserId, String followerName) {
+    public void sendFollowNotification(Long targetUserId, Notification notification) {
         List<SseEmitter> userEmitters = emitters.get(targetUserId);
         if (userEmitters != null) {
-            for (SseEmitter emitter : new CopyOnWriteArrayList<>(userEmitters)) { // 복사본으로 안전하게
+            for (SseEmitter emitter : new CopyOnWriteArrayList<>(userEmitters)) {
                 try {
+                    String json = objectMapper.writeValueAsString(notification);
                     emitter.send(SseEmitter.event()
                             .name("follow")
-                            .data(followerName + "님이 당신을 팔로우했습니다!"));
+                            .data(json));
                 } catch (IOException e) {
                     emitter.complete();
                     userEmitters.remove(emitter);

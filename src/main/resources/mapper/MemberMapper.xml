@@ -31,4 +31,42 @@
           FROM member
          WHERE id = ${memberId}
     </select>
+
+
+    <resultMap id="SearchMemberMap" type="com.leesang.mylocaldiary.member.mybatis.dto.SearchMemberDTO">
+        <id property="memberId" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="name" column="name"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="bio" column="bio"/>
+        <result property="followStatus" column="follow_status"/>
+    </resultMap>
+
+    <select id="searchMembersWithFollowStatus"
+            resultMap="SearchMemberMap"
+            parameterType="map">
+        SELECT
+            m.id,
+            m.nickname,
+            m.name,
+            m.profile_image,
+            m.is_public,
+            m.bio,
+            f.status AS follow_status
+        FROM member m
+                 LEFT JOIN follow f
+                           ON f.follow_target_member_id = m.id
+                               AND f.following_member_id = #{myId}
+        WHERE
+            m.nickname LIKE CONCAT('%', #{nickname}, '%')
+          AND m.role != 'ADMIN'
+      AND m.status != 'SUSPENDED'
+      AND m.id != #{myId}
+    </select>
+
+
+
+
+
 </mapper>
