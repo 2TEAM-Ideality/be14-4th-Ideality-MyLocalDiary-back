@@ -15,15 +15,6 @@
         <result property="isPublic" column="is_public"/>
     </resultMap>
 
-    <resultMap id="OtherMemberInfoMap" type="com.leesang.mylocaldiary.member.mybatis.dto.OtherMemberInfoDTO">
-        <id property="id" column="id"/>
-        <result property="nickname" column="nickname"/>
-        <result property="bio" column="bio"/>
-        <result property="profileImage" column="profile_image"/>
-        <result property="profileMusic" column="profile_music"/>
-        <result property="isPublic" column="is_public"/>
-    </resultMap>
-
     <!-- 로그인한 유저 정보 가져오기 -->
     <select id="selectMemberInfo"
             resultMap="MemberInfoMap"
@@ -43,30 +34,23 @@
          WHERE id = #{memberId}
     </select>
 
-<<<<<<< HEAD
+
+    <resultMap id="OtherMemberInfoMap" type="com.leesang.mylocaldiary.member.mybatis.dto.OtherMemberInfoDTO">
+        <id property="id" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="bio" column="bio"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="profileMusic" column="profile_music"/>
+        <result property="isPublic" column="is_public"/>
+    </resultMap>
+
     <!--  팔로잉 or 공개 계정 유저 정보 가져오기  -->
     <select id="selectOtherMemberInfo"
             resultMap="OtherMemberInfoMap"
-=======
-
-    <resultMap id="SearchMemberMap" type="com.leesang.mylocaldiary.member.mybatis.dto.SearchMemberDTO">
-        <id property="memberId" column="id"/>
-        <result property="nickname" column="nickname"/>
-        <result property="name" column="name"/>
-        <result property="profileImage" column="profile_image"/>
-        <result property="isPublic" column="is_public"/>
-        <result property="bio" column="bio"/>
-        <result property="followStatus" column="follow_status"/>
-    </resultMap>
-
-    <select id="searchMembersWithFollowStatus"
-            resultMap="SearchMemberMap"
->>>>>>> cb96826ca0ab76cb8fe99645cb0dcb88cebce8f1
             parameterType="map">
         SELECT
             m.id,
             m.nickname,
-<<<<<<< HEAD
             m.bio,
             m.profile_image,
             m.profile_music,
@@ -82,7 +66,24 @@
           AND f.follow_target_member_id = #{targetMemberId}
             )
             )
-=======
+    </select>
+
+    <resultMap id="SearchMemberMap" type="com.leesang.mylocaldiary.member.mybatis.dto.SearchMemberDTO">
+        <id property="memberId" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="name" column="name"/>
+        <result property="profileImage" column="profile_image"/>
+        <result property="isPublic" column="is_public"/>
+        <result property="bio" column="bio"/>
+        <result property="followStatus" column="follow_status"/>
+    </resultMap>
+
+    <select id="searchMembersWithFollowStatus"
+            resultMap="SearchMemberMap"
+            parameterType="map">
+        SELECT
+            m.id,
+            m.nickname,
             m.name,
             m.profile_image,
             m.is_public,
@@ -97,14 +98,7 @@
           AND m.role != 'ADMIN'
       AND m.status != 'SUSPENDED'
       AND m.id != #{myId}
->>>>>>> cb96826ca0ab76cb8fe99645cb0dcb88cebce8f1
     </select>
 
 
-
-<<<<<<< HEAD
-=======
-
-
->>>>>>> cb96826ca0ab76cb8fe99645cb0dcb88cebce8f1
 </mapper>
