@@ -10,8 +10,8 @@ public class MyPagePostController {
 
     private final MyPagePostService myPagePostService;
 
-    @GetMapping("/{memberId}/posts/count")
-    public int getPostCount(@PathVariable Long memberId) {
+    @GetMapping("/posts/count")
+    public int getPostCount(@RequestParam Long memberId) {
         return myPagePostService.getPostCountByMember(memberId);
     }
 }
