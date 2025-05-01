@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leesang.mylocaldiary.mypagedetail.mybatis.MyPageFollowMapper">
+
+    <select id="countFollowing" resultType="int">
+        SELECT COUNT(*)
+        FROM follow
+        WHERE following_member_id = #{memberId}
+    </select>
+
+    <select id="getFollowingList" resultType="com.leesang.mylocaldiary.mypagedetail.mybatis.FollowedUserDTO">
+        SELECT m.id, m.nickname, m.profile_image
+        FROM follow f
+                 JOIN member m ON f.follow_target_member_id = m.id
+        WHERE f.following_member_id = #{memberId}
+    </select>
+
+    <select id="getFollowerCount" resultType="int">
+        SELECT COUNT(*)
+        FROM follow
+        WHERE follow_target_member_id = #{memberId}
+    </select>
+
+    <select id="getFollowerList" resultType="com.leesang.mylocaldiary.mypagedetail.mybatis.FollowedUserDTO">
+        SELECT m.id, m.nickname, m.profile_image
+        FROM follow f
+                 JOIN member m ON f.following_member_id = m.id
+        WHERE f.follow_target_member_id = #{memberId}
+    </select>
+
+
+</mapper>
