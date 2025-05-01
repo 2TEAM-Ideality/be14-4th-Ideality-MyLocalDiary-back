@@ -130,9 +130,9 @@ CREATE TABLE member_badge (
   id INT PRIMARY KEY AUTO_INCREMENT,
   achieved_date VARCHAR(255),
   member_id INT NOT NULL,
-  stamp_id INT NOT NULL,
+  badge_id INT NOT NULL,
   FOREIGN KEY (member_id) REFERENCES member(id),
-  FOREIGN KEY (stamp_id) REFERENCES stamp(id)
+  FOREIGN KEY (badge_id) REFERENCES stamp(id)
 );
 
 CREATE TABLE follow (
