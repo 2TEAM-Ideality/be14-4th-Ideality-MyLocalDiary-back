@@ -18,6 +18,7 @@ public enum ErrorCode {
     REFRESH_EXPIRED(HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 재로그인 하십시오."),
     TOKEN_NOT_EQUALS(HttpStatus.UNAUTHORIZED, "토큰이 일치하지 않습니다. 다시 로그인 해주시길 바랍니다."),
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "허용되지 않은 접근입니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않는 토큰입니다."),
 
     // ADMIN
     REPORT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 신고 내역을 찾을 수 없습니다."),

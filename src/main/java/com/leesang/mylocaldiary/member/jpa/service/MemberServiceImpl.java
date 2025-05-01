@@ -7,7 +7,9 @@ import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.jwt.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,6 +45,7 @@ public class MemberServiceImpl implements MemberService {
     public ResponseEntity<CommonResponseVO<?>> reissueAccessToken(HttpServletRequest request) {
         // 1. 토큰 꺼내기 (헤더에서 추출)
         String refreshToken = jwtUtil.extractRefreshTokenFromCookie(request);
+        log.info("Refresh token: " + refreshToken);
 
         // 2. Refresh 유효성 체크
         if (!jwtUtil.validateToken(refreshToken)) {
@@ -79,9 +82,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = jwtUtil.extractAccessToken(request);
-
         Long memberId = jwtUtil.getUserIdFromToken(accessToken);
 
         // AccessToken 만료시간 계산
@@ -97,5 +99,13 @@ public class MemberServiceImpl implements MemberService {
         String refreshKey = "Refresh-Token:" + memberId;
         redisTemplate.delete(refreshKey);
 
+        // http-only 쿠키 제거
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
     }
 }
