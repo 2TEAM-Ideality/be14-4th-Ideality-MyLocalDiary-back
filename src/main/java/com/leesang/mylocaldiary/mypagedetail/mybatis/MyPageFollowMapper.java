@@ -9,4 +9,6 @@ import java.util.List;
 public interface MyPageFollowMapper {
     int countFollowing(@Param("memberId") int memberId);
     List<FollowedUserDTO> getFollowingList(@Param("memberId") int memberId);
+    int getFollowerCount(int memberId);
+    List<FollowedUserDTO> getFollowerList(int memberId); // 🔵 추가
 }
