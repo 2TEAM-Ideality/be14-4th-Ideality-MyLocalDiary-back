@@ -1,6 +1,8 @@
 package com.leesang.mylocaldiary.notification.service;
 
+import com.leesang.mylocaldiary.follow.jpa.repository.FollowRepository;
 import com.leesang.mylocaldiary.notification.controller.FollowSseController;
+import com.leesang.mylocaldiary.notification.dto.NotificationResponseDTO;
 import com.leesang.mylocaldiary.notification.entity.Notification;
 import com.leesang.mylocaldiary.notification.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,13 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final FollowSseController followSseController;
+    private final FollowRepository followRepository;
 
-    public NotificationService(NotificationRepository notificationRepository, FollowSseController followSseController) {
+    public NotificationService(NotificationRepository notificationRepository, FollowSseController followSseController,
+                               FollowRepository followRepository) {
         this.notificationRepository = notificationRepository;
         this.followSseController = followSseController;
+        this.followRepository = followRepository;
     }
     @Transactional
     public void markAsRead(Long id) {
@@ -50,4 +55,36 @@ public class NotificationService {
     public List<Notification> getNotifications(Long memberId) {
         return notificationRepository.findByRecievingMemberIdOrderByIdDesc(memberId);
     }
+
+    public List<NotificationResponseDTO> getNotificationsWithFollowStatus(Long memberId) {
+        List<Notification> notifications = notificationRepository.findByRecievingMemberIdOrderByIdDesc(memberId);
+
+        return notifications.stream().map(noti -> {
+            boolean isAccepted = false;
+
+            // FOLLOW 알림이고, "요청"이라는 텍스트가 들어간 경우만 처리
+            if ("FOLLOW".equals(noti.getType()) && noti.getContent().contains("요청")) {
+                isAccepted = followRepository
+                        .findByFollowingMemberIdAndFollowTargetMemberId(noti.getTargetId(), noti.getRecievingMemberId())
+                        .map(f -> Boolean.TRUE.equals(f.getStatus())) // null-safe true 체크
+                        .orElse(false);
+            }
+
+            return new NotificationResponseDTO(noti, isAccepted);
+        }).toList();
+    }
+
+    @Transactional
+    public void deleteFollowRequestNotification(Long senderId, Long receiverId) {
+        List<Notification> notifications = notificationRepository.findByRecievingMemberIdOrderByIdDesc(receiverId);
+
+        notifications.stream()
+                .filter(n -> n.getType().equals("FOLLOW") &&
+                        n.getTargetId().equals(senderId) &&
+                        n.getContent().contains("요청"))
+                .findFirst()
+                .ifPresent(notificationRepository::delete);
+    }
+
+
 }

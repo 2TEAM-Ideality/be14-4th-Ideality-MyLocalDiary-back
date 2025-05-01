@@ -55,9 +55,33 @@ public class FollowService {
         Optional<Follow> follow = followRepository.findByFollowingMemberIdAndFollowTargetMemberId(fromId, toId);
         if (follow.isPresent()) {
             followRepository.delete(follow.get());
+
+            // ✅ 팔로우 알림도 삭제
+            notificationService.deleteFollowRequestNotification(fromId, toId);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "팔로우 관계가 존재하지 않습니다.");
         }
     }
+
+
+    @Transactional
+    public void acceptFollow(Long fromId, Long toId) {
+        Follow follow = followRepository.findByFollowingMemberIdAndFollowTargetMemberId(fromId, toId)
+                .orElseThrow(() -> new RuntimeException("팔로우 요청이 존재하지 않습니다."));
+
+        follow.setStatus(true); // 대기 상태 → 수락
+        // 💥 알림도 삭제
+        notificationService.deleteFollowRequestNotification(fromId, toId);
+    }
+
+    @Transactional
+    public void rejectFollow(Long fromId, Long toId) {
+        followRepository.findByFollowingMemberIdAndFollowTargetMemberId(fromId, toId)
+                .ifPresent(followRepository::delete);
+
+        // 💥 알림도 삭제
+        notificationService.deleteFollowRequestNotification(fromId, toId);
+    }
+
 
 }
