@@ -1,5 +1,6 @@
 package com.leesang.mylocaldiary.notification.controller;
 
+import com.leesang.mylocaldiary.notification.dto.NotificationResponseDTO;
 import com.leesang.mylocaldiary.notification.entity.Notification;
 import com.leesang.mylocaldiary.notification.service.NotificationService;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
@@ -28,9 +29,10 @@ public class NotificationController {
 
 
     @GetMapping("/api/notifications")
-    public List<Notification> getMyNotifications(@RequestHeader("Authorization") String token) {
+    public List<NotificationResponseDTO> getMyNotifications(@RequestHeader("Authorization") String token) {
         String pureToken = token.replace("Bearer ", "");
         Long memberId = jwtProvider.getUserIdFromToken(pureToken);
-        return notificationService.getNotifications(memberId);
+        return notificationService.getNotificationsWithFollowStatus(memberId);
     }
+
 }
