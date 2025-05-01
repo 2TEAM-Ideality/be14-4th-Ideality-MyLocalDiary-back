@@ -1,5 +1,6 @@
 package com.leesang.mylocaldiary.security.config;
 
+import com.leesang.mylocaldiary.redis.util.RedisUtil;
 import com.leesang.mylocaldiary.security.filter.CustomAuthenticationFilter;
 import com.leesang.mylocaldiary.security.jwt.JwtFilter;
 import com.leesang.mylocaldiary.security.handler.JwtAuthenticationEntryPoint;
@@ -30,14 +31,19 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final RedisTemplate<String, String> redisTemplate;  // 🔥 RedisTemplate 주입 추가
-
+    private final RedisUtil redisUtil;
 
     @Autowired
-    public WebSecurityConfig(JwtProvider jwtProvider, JwtUtil jwtUtil, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, RedisTemplate<String, String> redisTemplate) {
+    public WebSecurityConfig(JwtProvider jwtProvider,
+                             JwtUtil jwtUtil,
+                             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                             RedisTemplate<String, String> redisTemplate,
+                             RedisUtil redisUtil) {
         this.jwtProvider = jwtProvider;
         this.jwtUtil = jwtUtil;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.redisTemplate = redisTemplate;
+        this.redisUtil = redisUtil;
     }
 
     @Bean
@@ -53,7 +59,7 @@ public class WebSecurityConfig {
         customAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
                 new AntPathRequestMatcher("/api/auth/login", "POST")
         );
-
+        JwtFilter jwtFilter = new JwtFilter(jwtUtil, redisUtil);
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -82,7 +88,7 @@ public class WebSecurityConfig {
                         })
                 )
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
