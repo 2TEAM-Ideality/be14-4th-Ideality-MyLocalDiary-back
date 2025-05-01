@@ -3,6 +3,7 @@ package com.leesang.mylocaldiary.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class JwtProvider {
 
     private final Key key;
     private final long expirationTimeInMillis;
+    @Getter
     private final long refreshExpirationTimeInMillis;
 
     public JwtProvider(
@@ -70,4 +72,5 @@ public class JwtProvider {
         Claims claims = getClaims(token);
         return Long.valueOf(claims.getSubject()); // subject에 memberId가 들어있음
     }
+
 }

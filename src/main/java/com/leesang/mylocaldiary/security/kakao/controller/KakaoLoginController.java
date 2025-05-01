@@ -14,6 +14,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +36,8 @@ public class KakaoLoginController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/callback")
-    public ResponseEntity<CommonResponseVO<Object>> callback(@RequestParam("code") String code) {
+    public ResponseEntity<CommonResponseVO<Object>> callback(@RequestParam("code") String code
+    , HttpServletResponse response) {
         String accessToken = kakaoService.getAccessTokenFromKakao(code);
 
         KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(accessToken);
@@ -69,6 +73,13 @@ public class KakaoLoginController {
         String refreshToken = jwtProvider.generateRefreshToken(member.getId());
         log.info("refreshToken={}", refreshToken);
 
+        Cookie refreshTokenCookie=new Cookie("refreshToken",refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000)); // 밀리초 → 초
+
+        response.addCookie(refreshTokenCookie);
+
         if(responseMessage.length()==0){
             responseMessage="카카오 계정으로 로그인 성공";
         }else{
@@ -79,7 +90,7 @@ public class KakaoLoginController {
         CommonResponseVO<Object> commonResponse = CommonResponseVO.builder()
                 .status(200)
                 .message("로그인 성공")
-                .data(Map.of("accessToken", jwtToken, "refreshToken", refreshToken))
+                .data(Map.of("accessToken", jwtToken))
                 .build();
 
         log.debug("callback end");
