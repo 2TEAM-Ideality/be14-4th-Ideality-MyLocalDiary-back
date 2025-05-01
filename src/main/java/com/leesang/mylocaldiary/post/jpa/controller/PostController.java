@@ -26,9 +26,9 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> createPost(
-            @RequestPart PostCreateRequest request,
-            @RequestPart List<MultipartFile> images,
-            @RequestPart List<MultipartFile> thumbnails,
+            @RequestPart("request") PostCreateRequest request,
+            @RequestPart("images") List<MultipartFile> images,
+            @RequestPart("thumbnails") List<MultipartFile> thumbnails,
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         try {
