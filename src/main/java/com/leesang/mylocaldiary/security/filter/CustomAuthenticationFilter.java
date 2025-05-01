@@ -129,14 +129,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     }
 
     // http-only 쿠키로 변경
+    // http-only 쿠키로 변경
     private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // HTTPS 환경에서 true, 로컬 개발용이면 false로
+        cookie.setSecure(true); // ✅ 배포 환경 or 크롬 최신에서는 필수
         cookie.setPath("/");
-        cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000)); // 7일
+        cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000));
+        cookie.setDomain("localhost"); // ❓필요 시 명시
 
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie",
+                String.format("refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None",
+                        refreshToken, cookie.getMaxAge()));
     }
 }
