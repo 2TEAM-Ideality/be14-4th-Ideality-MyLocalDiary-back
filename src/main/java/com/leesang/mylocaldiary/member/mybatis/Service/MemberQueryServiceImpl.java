@@ -1,14 +1,15 @@
 package com.leesang.mylocaldiary.member.mybatis.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import com.leesang.mylocaldiary.member.mybatis.Mapper.MemberMapper;
 import com.leesang.mylocaldiary.member.mybatis.dto.MemberInfoDTO;
 import com.leesang.mylocaldiary.member.mybatis.dto.OtherMemberInfoDTO;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.leesang.mylocaldiary.member.mybatis.dto.SearchMemberDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,4 +38,9 @@ public class MemberQueryServiceImpl implements MemberQueryService {
         return memberMapper.selectOtherMemberInfo(params);
     }
 
+
+    @Override
+    public List<SearchMemberDTO> searchMembers(String nickname, Long myId) {
+        return memberMapper.searchMembersWithFollowStatus(nickname, myId);
+    }
 }
