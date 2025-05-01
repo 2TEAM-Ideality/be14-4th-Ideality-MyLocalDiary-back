@@ -131,7 +131,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     // http-only 쿠키로 변경
     private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
 
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(false); // HTTPS 환경에서 true, 로컬 개발용이면 false로
         cookie.setPath("/");
