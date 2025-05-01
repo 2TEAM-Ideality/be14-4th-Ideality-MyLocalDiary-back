@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/stamp")
+@RequestMapping("/api")
 public class StampQueryController {
     private final StampQueryService stampQueryService;
 
@@ -23,10 +23,16 @@ public class StampQueryController {
     }
 
     // 멤버 id로 해당 멤버가 획득한 스탬프와 각 종류별 갯수
-    @GetMapping
+    @GetMapping("/stamp")
     public ResponseEntity<Map<String, Integer>> findMemberStamp(@RequestParam Integer memberId) {
         return ResponseEntity.ok(stampQueryService.findMemberStamp(memberId));
     }
 
-    // 뱃지 id로 획득일 조회
+    // 스탬프 id로 획득일 조회
+
+    // 멤버 id로 해당 멤버가 획득한 뱃지 조회
+    @GetMapping("/badge")
+    public ResponseEntity<List<String>> findBadgesByMemberId(@RequestParam Integer memberId) {
+        return ResponseEntity.ok(stampQueryService.findBadgeByMemberId(memberId));
+    }
 }

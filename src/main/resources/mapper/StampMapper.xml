@@ -13,4 +13,11 @@
          ORDER BY s.id
     </select>
 
+    <select id="selectBadgeByMemberId" resultType="string">
+        SELECT b.name
+        FROM member_badge mb
+                 JOIN badge b ON mb.badge_id = b.id
+        WHERE mb.member_id = #{memberId}
+    </select>
+
 </mapper>

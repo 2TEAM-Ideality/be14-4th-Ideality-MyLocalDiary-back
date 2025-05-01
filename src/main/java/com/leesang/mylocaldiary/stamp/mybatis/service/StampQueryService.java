@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface StampQueryService {
     Map<String, Integer> findMemberStamp(Integer memberId);
+
+    List<String> findBadgeByMemberId(Integer memberId);
 }

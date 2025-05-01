@@ -27,4 +27,9 @@ public class StampQueryServiceImpl implements StampQueryService {
                 e -> ((Long) e.get("cnt")).intValue()
         ));
     }
+
+    @Override
+    public List<String> findBadgeByMemberId(Integer memberId) {
+        return stampMapper.selectBadgeByMemberId(memberId);
+    }
 }

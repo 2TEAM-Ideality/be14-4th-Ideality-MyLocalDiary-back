@@ -68,7 +68,8 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/login/kakao")).permitAll() // kakao 로그인 허용
                         .requestMatchers(new AntPathRequestMatcher("/callback")).permitAll() // kakao callback 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/stamp/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/stamp")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/badge")).permitAll()
                         .requestMatchers("/api/member/reissue").permitAll()
                         .anyRequest().authenticated()
                 )
