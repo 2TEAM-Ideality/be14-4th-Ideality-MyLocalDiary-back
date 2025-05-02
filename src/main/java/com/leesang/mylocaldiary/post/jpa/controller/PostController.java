@@ -80,16 +80,6 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/comment/like/check")
-    public ResponseEntity<Boolean> isCommentLiked(
-            @RequestParam Integer commentId,
-            @RequestParam Integer memberId
-    ) {
-        boolean liked = likeService.isLiked(commentId, memberId, LikeType.COMMENT);
-        return ResponseEntity.ok(liked);
-    }
-
-
     /*
     // Security
     @PostMapping
