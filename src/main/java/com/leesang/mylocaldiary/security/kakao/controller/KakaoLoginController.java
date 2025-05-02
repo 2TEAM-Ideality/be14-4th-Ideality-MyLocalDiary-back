@@ -94,6 +94,9 @@ public class KakaoLoginController {
                 .build();
 
         log.debug("callback end");
+        // -------------------------- 로그인 로직
+
         return ResponseEntity.ok(commonResponse);
+        
     }
 }
