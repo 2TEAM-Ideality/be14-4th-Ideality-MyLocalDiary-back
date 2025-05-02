@@ -16,13 +16,13 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     @Transactional
-    public void like(Integer postId, Integer memberId) {
-        boolean alreadyLiked = likeRepository.existsByMemberIdAndTypeAndTargetId(memberId, LikeType.POST, postId);
+    public void like(Integer targetId, Integer memberId, LikeType type) {
+        boolean alreadyLiked = likeRepository.existsByMemberIdAndTypeAndTargetId(memberId, type, targetId);
         if (!alreadyLiked) {
             Like like = Like.builder()
                     .memberId(memberId)
-                    .type(LikeType.POST)
-                    .targetId(postId)
+                    .type(type)
+                    .targetId(targetId)
                     .createdAt(LocalDateTime.now().toString())
                     .build();
             likeRepository.save(like);
@@ -30,17 +30,18 @@ public class LikeService {
     }
 
     @Transactional
-    public void unlike(Integer postId, Integer memberId) {
-        likeRepository.deleteByMemberIdAndTypeAndTargetId(memberId, LikeType.POST, postId);
+    public void unlike(Integer targetId, Integer memberId, LikeType type) {
+        likeRepository.deleteByMemberIdAndTypeAndTargetId(memberId, type, targetId);
     }
 
     @Transactional(readOnly = true)
-    public boolean isLiked(Integer postId, Integer memberId) {
-        return likeRepository.existsByMemberIdAndTypeAndTargetId(memberId, LikeType.POST, postId);
+    public boolean isLiked(Integer targetId, Integer memberId, LikeType type) {
+        return likeRepository.existsByMemberIdAndTypeAndTargetId(memberId, type, targetId);
     }
 
     @Transactional(readOnly = true)
-    public int countLikes(Integer postId) {
-        return likeRepository.countByTypeAndTargetId(LikeType.POST, postId);
+    public int countLikes(Integer targetId, LikeType type) {
+        return likeRepository.countByTypeAndTargetId(type, targetId);
     }
 }
+
