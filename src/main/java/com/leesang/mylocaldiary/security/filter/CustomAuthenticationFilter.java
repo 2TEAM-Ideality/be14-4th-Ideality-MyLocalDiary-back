@@ -138,8 +138,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000));
 //        cookie.setDomain("localhost"); // ❓필요 시 명시
 
-        response.addHeader("Set-Cookie",
-                String.format("refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None",
-                        refreshToken, cookie.getMaxAge()));
+//        response.addHeader("Set-Cookie",
+//                String.format("refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None",
+//                        refreshToken, cookie.getMaxAge()));
     }
 }
