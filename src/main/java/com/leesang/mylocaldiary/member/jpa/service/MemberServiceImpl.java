@@ -42,20 +42,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public ResponseEntity<CommonResponseVO<?>> reissueAccessToken(HttpServletRequest request) {
-        // 1. 토큰 꺼내기 (헤더에서 추출)
-        String refreshToken = jwtUtil.extractRefreshTokenFromCookie(request);
+    public ResponseEntity<CommonResponseVO<?>> reissueAccessToken(String refreshToken) {
         log.info("Refresh token: " + refreshToken);
 
-        // 2. Refresh 유효성 체크
+        // 1. Refresh 유효성 체크
         if (!jwtUtil.validateToken(refreshToken)) {
+            log.info("Refresh token is invalid.");
             throw new GlobalException(ErrorCode.REFRESH_EXPIRED);
         }
 
-        // 4. memberId 추출 (subject에 있음)
+        // 2. memberId 추출
         Integer memberId = jwtUtil.getUserIdFromToken(refreshToken).intValue();
 
-        // 5. Redis에 저장된 Refresh Token과 비교
+        // 3. Redis에 저장된 Refresh Token과 비교
         String redisKey = "Refresh-Token:" + memberId;
         String savedRefreshToken = (String) redisTemplate.opsForValue().get(redisKey);
 
@@ -63,16 +62,16 @@ public class MemberServiceImpl implements MemberService {
             throw new GlobalException(ErrorCode.TOKEN_NOT_EQUALS);
         }
 
-        // 6. Access 재발급 -> db에 해당하는 id 조회
+        // 4. Access Token 재발급
         MemberEntity findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.MEMBER_NOT_FOUND));
 
+        String newAccessToken = jwtProvider.generateAccessToken(
+                memberId,
+                findMember.getEmail(),
+                String.valueOf(findMember.getMemberRole())
+        );
 
-        String newAccessToken = jwtProvider.generateAccessToken(memberId
-                , findMember.getEmail()
-                , String.valueOf(findMember.getMemberRole()));
-
-        // 7. 응답 반환
         return ResponseEntity.ok(CommonResponseVO.builder()
                 .status(200)
                 .message("Access Token 재발급 완료")
@@ -82,30 +81,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        String accessToken = jwtUtil.extractAccessToken(request);
+    public void logout(String accessToken) {
         Long memberId = jwtUtil.getUserIdFromToken(accessToken);
 
-        // AccessToken 만료시간 계산
+        // 1. AccessToken 블랙리스트 처리
         long expiration = jwtUtil.getExpiration(accessToken);
         String blacklistKey = "Blacklist:" + accessToken;
+        redisTemplate.opsForValue().set(blacklistKey, "logout", expiration, TimeUnit.MILLISECONDS);
 
-        // 블랙리스트 추가
-        redisTemplate.opsForValue().set(blacklistKey,
-                "logout", expiration,
-                TimeUnit.MILLISECONDS);
-
-        // RefreshToken 제거
+        // 2. Redis에 저장된 RefreshToken 제거
         String refreshKey = "Refresh-Token:" + memberId;
         redisTemplate.delete(refreshKey);
 
-        // http-only 쿠키 제거
-        Cookie cookie = new Cookie("refreshToken", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-
-        response.addCookie(cookie);
     }
 }
