@@ -58,6 +58,11 @@ kakao:
   client_id: ${REST_API_KEY}
   redirect_uri: http://localhost:8080/callback
 
+naver:
+  search:
+    client-id: ${NAVER_SEARCH_CLIENT_ID}
+  client-secret: ${NAVER_SEARCH_CLIENT_SECRET}
+
 logging:
   level:
     org.springframework.security: DEBUG
