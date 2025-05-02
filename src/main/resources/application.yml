@@ -64,6 +64,11 @@ kakao:
   redirect_uri: http://localhost/api/callback
 #  redirect_uri: http://host.docker.internal:8080/callback
 
+naver:
+  search:
+    client-id: ${NAVER_SEARCH_CLIENT_ID}
+  client-secret: ${NAVER_SEARCH_CLIENT_SECRET}
+
 logging:
   level:
     org.springframework.security: DEBUG

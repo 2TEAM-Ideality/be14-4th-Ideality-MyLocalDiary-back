@@ -8,8 +8,6 @@ import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

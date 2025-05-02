@@ -73,6 +73,7 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).permitAll() // admin 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/login/kakao")).permitAll() // kakao 로그인 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/callback")).permitAll() // kakao callback 허용
+                        .requestMatchers("/api/naver/search").permitAll()  // 지도 api 허용
                         .requestMatchers(new AntPathRequestMatcher("/api/posts/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/stamp/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/badge")).permitAll()
