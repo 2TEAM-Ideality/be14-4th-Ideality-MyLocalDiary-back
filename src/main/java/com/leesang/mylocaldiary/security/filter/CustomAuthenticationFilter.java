@@ -133,7 +133,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // ✅ 배포 환경 or 크롬 최신에서는 필수
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000));
 //        cookie.setDomain("localhost"); // ❓필요 시 명시
