@@ -26,33 +26,19 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<?> createPost(
-<<<<<<< HEAD
-        @RequestPart PostCreateRequest request,
-        @RequestPart List<MultipartFile> images,
-        @RequestPart List<MultipartFile> thumbnails,
-        @RequestHeader("Authorization") String authorizationHeader
-=======
-            @RequestPart PostCreateRequest request,
-            @RequestPart List<MultipartFile> images,
-            @RequestPart List<MultipartFile> thumbnails,
+            @RequestPart("request") PostCreateRequest request,
+            @RequestPart("images") List<MultipartFile> images,
+            @RequestPart("thumbnails") List<MultipartFile> thumbnails,
             @RequestHeader("Authorization") String authorizationHeader
->>>>>>> ae19a3b1ea81b6558195e7ba7921b8403c8399ac
     ) {
         try {
             String token = authorizationHeader.replace("Bearer ", "");
             Claims claims = jwtUtil.getClaimsAllowExpired(token); // 🔥 AllowExpired → 인증은 이미 끝난 상황
             Integer memberId = Integer.valueOf(claims.getSubject()); // 🔐 subject에 memberId 저장됨
-<<<<<<< HEAD
-
-            MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-
-=======
 
             MemberEntity member = memberRepository.findById(memberId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
->>>>>>> ae19a3b1ea81b6558195e7ba7921b8403c8399ac
             postService.createPost(request, images, thumbnails, member);
             return ResponseEntity.ok().build();
         } catch (Exception e) {

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @Slf4j
@@ -68,5 +70,29 @@ public class AuthController {
                 .data(null)
                 .build();
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/check-loginId")
+    public ResponseEntity<CommonResponseVO<?>> checkLoginId(@RequestParam("loginId") String loginId) {
+        boolean available = authService.isLoginIdAvaliable(loginId);
+        return ResponseEntity.ok(
+                CommonResponseVO.builder()
+                        .status(200)
+                        .message("사용 가능 여부 확인 완료")
+                        .data(Map.of("available", available))
+                        .build()
+        );
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<CommonResponseVO<?>> checkNickname(@RequestParam("nickname") String nickname) {
+        boolean available = authService.isNicknameAvaliable(nickname);
+        return ResponseEntity.ok(
+                CommonResponseVO.builder()
+                        .status(200)
+                        .message("사용 가능 여부 확인 완료")
+                        .data(Map.of("available", available))
+                        .build()
+        );
     }
 }
