@@ -15,6 +15,7 @@ spring:
   jpa:
     properties:
       hibernate.dialect: org.hibernate.dialect.MariaDBDialect
+      open-in-view: false
   profiles:
     include: jwt, aws
   data:
