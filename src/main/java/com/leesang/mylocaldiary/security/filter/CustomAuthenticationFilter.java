@@ -79,11 +79,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String accessToken = jwtProvider.generateAccessToken(memberId, email, role);
         String refreshToken = jwtProvider.generateRefreshToken(memberId);
         // http-only 쿠키로 전환
-        addRefreshTokenToCookie(response, refreshToken);
 
         // Redis 저장
         String redisKey = "Refresh-Token:" + memberId;
+        log.info("Redis 저장 시도: key={}, value={}", redisKey, refreshToken);
         redisTemplate.opsForValue().set(redisKey, refreshToken, 7, TimeUnit.DAYS);
+        log.info("Redis 저장 완료!");
 
         // 🔥 Content-Type을 JSON으로 설정
         response.setContentType("application/json");
@@ -93,7 +94,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         CommonResponseVO<Object> commonResponse = CommonResponseVO.builder()
                 .status(200)
                 .message("로그인 성공")
-                .data(Map.of("accessToken", accessToken))
+                .data(Map.of(
+                "accessToken", accessToken,
+                "refreshToken", refreshToken  // ✅ 이거 추가
+        ))
                 .build();
 
         String jsonResponse = new ObjectMapper().writeValueAsString(commonResponse);
@@ -128,18 +132,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.getWriter().write(jsonResponse);
     }
 
-    // http-only 쿠키로 변경
-    // http-only 쿠키로 변경
-    private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true); // ✅ 배포 환경 or 크롬 최신에서는 필수
-        cookie.setPath("/");
-        cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000));
-        cookie.setDomain("localhost"); // ❓필요 시 명시
-
-        response.addHeader("Set-Cookie",
-                String.format("refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None",
-                        refreshToken, cookie.getMaxAge()));
-    }
+//    // http-only 쿠키로 변경
+//    // http-only 쿠키로 변경
+//    private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+//        Cookie cookie = new Cookie("refreshToken", refreshToken);
+//        cookie.setHttpOnly(true);
+//        cookie.setSecure(true); // ✅ 배포 환경 or 크롬 최신에서는 필수
+//        cookie.setPath("/");
+//        cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000));
+//        cookie.setDomain("localhost"); // ❓필요 시 명시
+//
+//        response.addHeader("Set-Cookie",
+//                String.format("refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None",
+//                        refreshToken, cookie.getMaxAge()));
+//    }
 }
