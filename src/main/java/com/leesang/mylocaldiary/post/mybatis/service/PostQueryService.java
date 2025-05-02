@@ -66,4 +66,10 @@ public class PostQueryService {
     public List<CommentResponse> findRepliesByParentCommentId(Integer parentCommentId) {
         return postMapper.findRepliesByParentCommentId(parentCommentId);
     }
+
+    // PostQueryService.java
+    public boolean isCommentLikedByCurrentUser(Integer commentId, Integer memberId) {
+        return postMapper.isCommentLikedByCurrentUser(commentId, memberId);
+    }
+
 }

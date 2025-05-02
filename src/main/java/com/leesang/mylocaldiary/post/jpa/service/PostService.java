@@ -31,13 +31,13 @@ public class PostService {
     public Long createPost(PostCreateRequest request, List<MultipartFile> images, List<MultipartFile> thumbnails, MemberEntity member) {
         // 1. 게시글 생성 및 저장 (postId 확보용)
         Post post = Post.builder()
-                .title(request.getTitle())
-                .post(request.getPost())
-                .diary(request.getDiary())
-                .createdAt(now())
-                .updatedAt(now())
-                .member(member)
-                .build();
+            .title(request.getTitle())
+            .post(request.getPost())
+            .diary(request.getDiary())
+            .createdAt(now())
+            .updatedAt(now())
+            .member(member)
+            .build();
 
         postRepository.save(post); // 먼저 저장 → post.getId() 사용 가능
 
@@ -47,10 +47,10 @@ public class PostService {
             String folderPath = "post/" + post.getId() + "/images";
             String imageUrl = s3Uploader.upload(image, folderPath);
             Photo photo = Photo.builder()
-                    .imageUrl(imageUrl)
-                    .orders(photoOrder++)
-                    .post(post)
-                    .build();
+                .imageUrl(imageUrl)
+                .orders(photoOrder++)
+                .post(post)
+                .build();
             post.addPhoto(photo);
         }
 
@@ -64,13 +64,13 @@ public class PostService {
             String thumbnailUrl = s3Uploader.upload(thumbnail, thumbnailPath);
 
             Place place = Place.builder()
-                    .name(placeDto.getName())
-                    .latitude(BigDecimal.valueOf(placeDto.getLatitude()))
-                    .longitude(BigDecimal.valueOf(placeDto.getLongitude()))
-                    .orders(placeOrder++)
-                    .thumbnailImage(thumbnailUrl)
-                    .post(post)
-                    .build();
+                .name(placeDto.getName())
+                .latitude(BigDecimal.valueOf(placeDto.getLatitude()))
+                .longitude(BigDecimal.valueOf(placeDto.getLongitude()))
+                .orders(placeOrder++)
+                .thumbnailImage(thumbnailUrl)
+                .post(post)
+                .build();
             post.addPlace(place);
         }
 

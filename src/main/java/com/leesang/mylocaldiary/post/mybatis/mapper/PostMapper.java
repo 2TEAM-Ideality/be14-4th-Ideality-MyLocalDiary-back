@@ -32,4 +32,7 @@ public interface PostMapper {
     List<CommentResponse> findCommentsByPostId(@Param("postId") Integer postId);
 
     List<CommentResponse> findRepliesByParentCommentId(@Param("parentCommentId") Integer parentCommentId);
+
+    boolean isCommentLikedByCurrentUser(@Param("commentId") Integer commentId, @Param("memberId") Integer memberId);
+
 }
