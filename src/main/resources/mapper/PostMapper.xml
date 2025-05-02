@@ -64,6 +64,10 @@
             pl.name AS placeName,
             pl.latitude,
             pl.longitude,
+            -- 제목 추가
+            p.title AS postTitle,
+            -- 생성일 추가
+            p.created_at,
             pl.thumbnail_image AS thumbnailImage
         FROM post p
                  JOIN place pl ON p.id = pl.post_id
@@ -115,6 +119,10 @@
             p.id AS postId,
             p.member_id AS memberId,
             pl.name AS placeName,
+            -- 제목 추가
+            p.title AS postTitle,
+            -- 생성일 추가
+            p.created_at,
             pl.latitude,
             pl.longitude,
             pl.thumbnail_image AS thumbnailImage
