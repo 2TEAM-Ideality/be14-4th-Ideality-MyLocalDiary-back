@@ -79,6 +79,8 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/badge")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/mypage/**")).permitAll()
                         .requestMatchers("/api/member/reissue").permitAll()
+                        .requestMatchers("/api/comments").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors
