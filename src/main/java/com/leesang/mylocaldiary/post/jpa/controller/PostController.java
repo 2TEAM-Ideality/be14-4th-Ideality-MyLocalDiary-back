@@ -3,9 +3,7 @@ package com.leesang.mylocaldiary.post.jpa.controller;
 import com.leesang.mylocaldiary.member.jpa.aggregate.MemberEntity;
 import com.leesang.mylocaldiary.member.jpa.repository.MemberRepository;
 import com.leesang.mylocaldiary.post.jpa.dto.PostCreateRequest;
-import com.leesang.mylocaldiary.post.jpa.service.LikeService;
 import com.leesang.mylocaldiary.post.jpa.service.PostService;
-import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +18,6 @@ public class PostController {
 
     private final PostService postService;
     private final MemberRepository memberRepository;
-    private final LikeService likeService;
-    private final JwtUtil jwtUtil; // 🔥 JwtUtil 주입
 
     @PostMapping
     public ResponseEntity<?> createPost(

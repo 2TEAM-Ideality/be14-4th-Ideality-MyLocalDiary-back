@@ -34,6 +34,8 @@
         <result property="post" column="post_content"/>
         <result property="diary" column="diary_content"/>
 
+        <result property="likes" column="likes_count"/>
+
         <result property="createdAt" column="created_at"/>
         <result property="postLikeCount" column="likes_count"/>
         <result property="memberId" column="member_id"/>
