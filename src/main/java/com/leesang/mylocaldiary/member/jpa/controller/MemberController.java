@@ -2,6 +2,7 @@ package com.leesang.mylocaldiary.member.jpa.controller;
 
 import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.member.jpa.service.MemberService;
+import com.leesang.mylocaldiary.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtUtil jwtUtil) {
         this.memberService = memberService;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/testJwtFilter")
@@ -27,16 +30,18 @@ public class MemberController {
         return "testJwtFilter";
     }
 
-    /* 설명. 토큰 재발급 */
+    // 재발급
     @PostMapping("/reissue")
     public ResponseEntity<CommonResponseVO<?>> reissueToken(HttpServletRequest request) {
-        return memberService.reissueAccessToken(request);
+        String refreshToken = request.getHeader("refresh-token");
+        return memberService.reissueAccessToken(refreshToken);
     }
 
-    /* 설명. 로그아웃(토큰 무효화) */
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponseVO<?>> logout(HttpServletRequest request, HttpServletResponse response) {
-        memberService.logout(request, response);
+    public ResponseEntity<CommonResponseVO<?>> logout(HttpServletRequest request) {
+        String accessToken = jwtUtil.extractAccessToken(request); // Authorization 헤더에서 추출
+        memberService.logout(accessToken);
+
         return ResponseEntity.ok(CommonResponseVO.builder()
                 .status(200)
                 .message("로그아웃이 완료되었습니다.")
