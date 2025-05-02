@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 public class KakaoLoginPageController {
 
     @Value("${kakao.client_id}")
