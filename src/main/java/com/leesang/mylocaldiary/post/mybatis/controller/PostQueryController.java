@@ -85,4 +85,8 @@ public class PostQueryController {
     public ResponseEntity<List<CommentResponse>> findRepliesByParentCommentId(@RequestParam Integer parentCommentId) {
         return ResponseEntity.ok(postQueryService.findRepliesByParentCommentId(parentCommentId));
     }
+
+
+    // 10. TODAY 다이어리 조회
+
 }
