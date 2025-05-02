@@ -212,4 +212,15 @@
         ORDER BY c.created_at ASC
     </select>
 
+    <select id="isCommentLikedByCurrentUser" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM likes
+            WHERE member_id = #{memberId}
+              AND target_id = #{commentId}
+              AND type = 'COMMENT'
+        )
+    </select>
+
+
 </mapper>

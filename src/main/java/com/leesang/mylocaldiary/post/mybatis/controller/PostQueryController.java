@@ -85,4 +85,14 @@ public class PostQueryController {
     public ResponseEntity<List<CommentResponse>> findRepliesByParentCommentId(@RequestParam Integer parentCommentId) {
         return ResponseEntity.ok(postQueryService.findRepliesByParentCommentId(parentCommentId));
     }
+    
+    // 10. 댓글 좋아요 여부 조회
+    @GetMapping("/comment/like/check")
+    public ResponseEntity<Boolean> isCommentLikedByCurrentUser(
+            @RequestParam Integer commentId,
+            @RequestParam Integer memberId
+    ) {
+        return ResponseEntity.ok(postQueryService.isCommentLikedByCurrentUser(commentId, memberId));
+    }
+
 }
