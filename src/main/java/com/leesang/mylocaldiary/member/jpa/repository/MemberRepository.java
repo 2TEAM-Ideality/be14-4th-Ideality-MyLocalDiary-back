@@ -14,4 +14,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Integer> {
 
     Optional<MemberEntity> findByProviderAndProviderId(MemberProvider provider, String providerId);
 
+    boolean existsByLoginId(String nickname);
+
+    boolean existsByNickname(String nickname);
 }

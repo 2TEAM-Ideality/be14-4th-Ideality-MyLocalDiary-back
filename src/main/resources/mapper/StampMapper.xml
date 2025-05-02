@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leesang.mylocaldiary.stamp.mybatis.mapper.StampMapper">
+
+    <select id="selectMemberStamp" resultType="map">
+        SELECT s.name AS stampName,
+               COUNT(ms.stamp_id) AS cnt
+          FROM stamp s
+          LEFT JOIN member_stamp ms
+            ON s.id = ms.stamp_id AND ms.member_id = #{memberId}
+         GROUP BY s.id
+         ORDER BY s.id
+    </select>
+
+    <select id="selectBadgeByMemberId" resultType="string">
+        SELECT b.name
+        FROM member_badge mb
+                 JOIN badge b ON mb.badge_id = b.id
+        WHERE mb.member_id = #{memberId}
+    </select>
+
+</mapper>

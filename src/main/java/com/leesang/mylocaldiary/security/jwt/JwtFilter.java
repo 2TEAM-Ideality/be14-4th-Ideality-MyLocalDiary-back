@@ -1,5 +1,6 @@
 package com.leesang.mylocaldiary.security.jwt;
 
+import com.leesang.mylocaldiary.redis.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,9 +18,12 @@ import java.util.Collections;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
 
-    public JwtFilter(JwtUtil jwtUtil) {
+
+    public JwtFilter(JwtUtil jwtUtil, RedisUtil redisUtil) {
         this.jwtUtil = jwtUtil;
+        this.redisUtil = redisUtil;
     }
 
     @Override
@@ -36,8 +40,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
             // 2. 토큰 유효성 검증
             if (jwtUtil.validateToken(token)) {
-                Claims claims = jwtUtil.getClaimsAllowExpired(token);
+                // 블랙리스트 검사
+                String blacklistKey = "Blacklist:" + token;
+                if (redisUtil.hasKey(blacklistKey)) {
+                    log.warn("Access Token이 black list에 있음 - 인증 중단");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
 
+                Claims claims = jwtUtil.getClaimsAllowExpired(token);
                 String loginId = claims.get("email", String.class); // 🔥 우리가 넣은건 email (loginId)
                 String role = claims.get("role", String.class);
 

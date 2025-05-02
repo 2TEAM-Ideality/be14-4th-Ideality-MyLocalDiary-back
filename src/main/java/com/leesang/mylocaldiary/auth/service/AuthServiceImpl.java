@@ -98,6 +98,16 @@ public class AuthServiceImpl implements AuthService {
         return 1;
     }
 
+    @Override
+    public boolean isLoginIdAvaliable(String loginId) {
+        return !memberRepository.existsByLoginId(loginId);
+    }
+
+    @Override
+    public boolean isNicknameAvaliable(String nickname) {
+        return !memberRepository.existsByNickname(nickname);
+    }
+
     private static String genereateRandomCode() {
         Random r = new Random();
         // 100000 ~ 999999

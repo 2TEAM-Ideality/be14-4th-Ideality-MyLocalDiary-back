@@ -6,9 +6,11 @@ import com.leesang.mylocaldiary.common.response.CommonResponseVO;
 import com.leesang.mylocaldiary.security.jwt.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,12 +30,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final JwtProvider jwtProvider;
     private final RedisTemplate redisTemplate;
 
-    public CustomAuthenticationFilter(JwtProvider jwtProvider, RedisTemplate redisTemplate) {
-        this.jwtProvider = jwtProvider;
-        this.redisTemplate = redisTemplate;
-    }
-
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider, RedisTemplate redisTemplate) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager,
+                                      JwtProvider jwtProvider,
+                                      RedisTemplate redisTemplate) {
         super(authenticationManager);
         this.jwtProvider = jwtProvider;
         this.redisTemplate = redisTemplate;
@@ -79,6 +78,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         String accessToken = jwtProvider.generateAccessToken(memberId, email, role);
         String refreshToken = jwtProvider.generateRefreshToken(memberId);
+        // http-only 쿠키로 전환
+        addRefreshTokenToCookie(response, refreshToken);
 
         // Redis 저장
         String redisKey = "Refresh-Token:" + memberId;
@@ -92,7 +93,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         CommonResponseVO<Object> commonResponse = CommonResponseVO.builder()
                 .status(200)
                 .message("로그인 성공")
-                .data(Map.of("accessToken", accessToken, "refreshToken", refreshToken))
+                .data(Map.of("accessToken", accessToken))
                 .build();
 
         String jsonResponse = new ObjectMapper().writeValueAsString(commonResponse);
@@ -103,6 +104,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         log.info("AccessToken 발급 완료: {}", accessToken);
         log.info("RefreshToken 발급 완료: {}", refreshToken);
     }
+
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
@@ -124,5 +126,20 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String jsonResponse = new ObjectMapper().writeValueAsString(errorResponse);
 
         response.getWriter().write(jsonResponse);
+    }
+
+    // http-only 쿠키로 변경
+    // http-only 쿠키로 변경
+    private void addRefreshTokenToCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // ✅ 배포 환경 or 크롬 최신에서는 필수
+        cookie.setPath("/");
+        cookie.setMaxAge((int) (jwtProvider.getRefreshExpirationTimeInMillis() / 1000));
+        cookie.setDomain("localhost"); // ❓필요 시 명시
+
+        response.addHeader("Set-Cookie",
+                String.format("refreshToken=%s; Max-Age=%d; Path=/; HttpOnly; Secure; SameSite=None",
+                        refreshToken, cookie.getMaxAge()));
     }
 }
