@@ -45,13 +45,13 @@ public class SearchService {
 		// 파라미터 설정
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("query", query);
-		// params.add("display", "5"); // 검색 결과 개수 (선택)
+		params.add("display", "5"); // 검색 결과 개수 (선택)
 
 		// 요청 생성
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
 		// URL에 쿼리스트링 붙이기
-		String requestUrl = NAVER_LOCAL_SEARCH_URL + "?query=" + query;
+		String requestUrl = NAVER_LOCAL_SEARCH_URL + "?query=" + query + "&display=5";
 
 		// 요청 실행
 		ResponseEntity<Map> response = restTemplate.exchange(
